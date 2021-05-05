@@ -1,0 +1,38 @@
+---       Custom Spikes       ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The spike NPCs have the following properties for NPC configs and npc-n.txt files:
+
+
+- idleTime (Default: 96)
+How long the spike is idle before spawning a ball.
+
+- holdTime (Default: 32)
+How long the spike ball is held before throwing it.
+
+- throwID (Default value at top of .lua file)
+The ID of the thrown spike ball.
+
+- throwXSpeed (Default: 3)
+- throwYSpeed (Default: 4)
+The force the ball gets while being thrown.
+
+
+
+The spike ball NPCs have the following properties for NPC configs and npc-n.txt files:
+
+
+- startingSpeed (Default: 2.5)
+What speed to start at when spawned.
+
+- bounceHeight (Default: 4)
+Height of bounce.
+
+- issnowball
+Whether or not the ball is a snow ball.
+
+- islarge
+Whether or not the the ball is large.

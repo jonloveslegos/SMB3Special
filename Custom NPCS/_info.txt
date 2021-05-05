@@ -1,0 +1,4 @@
+--- MrDoubleA's NPC Pack v1.0 ---
+---       (Give credit!)      ---
+
+The IDs of any effects which the NPCs may create can be changed in the NPC's .lua file.

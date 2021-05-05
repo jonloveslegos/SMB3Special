@@ -1,0 +1,8 @@
+gfxwidth=48
+gfxheight=64
+width=48
+height=64
+speed=1
+nofireball=0
+noiceball=0
+name="Lava Lotus"

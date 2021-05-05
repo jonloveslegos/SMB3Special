@@ -1,0 +1,17 @@
+---         Big Coins         ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The big coin NPCs have the following properties for NPC configs and npc-n.txt files:
+
+
+- value
+How many coins are granted to the player upon collection.
+
+- collectEffectID
+The ID of the effect that is spawned upon collection.
+
+- collectSoundEffect
+The sound effect played upon collection. It can be a number for a vanilla sound effect, or a string for a custom one.

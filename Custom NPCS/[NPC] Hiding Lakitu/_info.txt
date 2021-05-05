@@ -1,0 +1,33 @@
+---       Hiding Lakitu       ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The hiding lakitu has the following properties for NPC configs and npc-n.txt files:
+
+
+- idleTime (Default: 64)
+How long the lakitu stays hiding before it starts rising.
+- watchTime (Default: 128)
+How long the lakitu looks left and right before it starts rising again.
+- readyTime (Default: 32)
+How long the lakitu waits before throwing an NPC.
+- throwTime (Default: 48)
+How long the lakitu is throwing an NPC.
+
+- raiseSpeed (Default: 1)
+How fast the lakitu raises upwards.
+- lowerSpeed (Default: 1)
+How fast the lakitu returns to its spawn point.
+
+- throwXSpeed (Default: 1.5)
+How fast the thrown NPC moves horizontally.
+- throwYSpeed (Default: -5)
+How fast the thrown NPC moves vertically.
+
+- throwSFX (Default: 25)
+The sound played when the lakitu throws an NPC. Can be nil for none, a number for a vanilla sound, or a sound effect object/string for a custom sound.
+
+- minPlayerDistance (Default: 48)
+The minimum distance from the player to be able to start rising.

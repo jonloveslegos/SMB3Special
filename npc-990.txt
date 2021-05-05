@@ -1,0 +1,6 @@
+jumphurt=0
+nohurt=1
+noblockcollision=1
+noyoshi=1
+nogravity=1
+frames=8

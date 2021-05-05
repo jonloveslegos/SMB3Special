@@ -1,0 +1,11 @@
+YI Goonies
+-New Riding Logic by Enjl
+-Goonie Carrier NPC rendering logic based on Albatoss by boingboingsplat
+-Bowling Goonie rendering logic based on basegame Grrrol by Saturnyoshi and Enjl
+
+Baron von Zeppelin
+-Container NPC rendering logic based on Albatoss by boingboingsplat
+
+Upside Down Buzzy Beetle & Spiny
+-Ceiling Detection Code from Polflip by Enjl
+-Shell interaction code by Yoshi021 and MrDoubleA

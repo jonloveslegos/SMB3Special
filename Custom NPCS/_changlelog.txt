@@ -1,0 +1,102 @@
+--- MrDoubleA's NPC Pack v1.3 ---
+---         Changelog         ---
+
+--- New Additions ---
+- Added SMM keys.
+- Added Sonic monitors.
+- Added swinging platforms.
+- Added battin' chuck.
+
+--- Fixes ---
+- Piranha Plants: The NPC's will no longer render behind BGO's.
+- Big Coins: The NPC's will now follow their layers' movement. The collection effect has also been made more accurate.
+- P-Balloon: The player will no longer get stuck on the ceiling using it.
+- P-Balloon: Downwards speed of the T-Balloon has been increased.
+
+
+
+--- MrDoubleA's NPC Pack v1.2.1 ---
+---          Changelog          ---
+
+--- New Additions ---
+- Added the seesaw platforms.
+- Added piranha plants.
+- Added one-way walls.
+
+--- Fixes ---
+- General: Any NPCs that spawn something else (whether it be an NPC, effect, or block) now, by default, has the effect based on their own ID
+- Exclamation Mark Block: A change to their "blink" shader has been made, which should hopefully make them work on some more GPUs.
+- Boom Booms: They will no longer error if harmed while offscreen.
+- Goal Tape: Checkpoints will now reset properly when exiting with it.
+
+
+
+
+--- MrDoubleA's NPC Pack v1.2 ---
+---         Changelog         ---
+
+--- General ---
+- All folders are now prefixed with either "[NPC]" or "[Block]".
+
+--- New Additions ---
+- Added NPC Towers.
+- Added P-Balloons.
+- Added Goal Tapes.
+- Added Mechakoopas.
+- Added Kritters.
+- Added Custom Bullies.
+- Added Hiding Lakitus.
+- Added Exclamation Mark Blocks.
+
+--- Custom Volcano Lotuses ---
+- Volcano Lotus Fireballs can no longer be frozen with ice balls.
+- Volcano Lotuses will no longer fly around after being on Yoshi's tongue before the player dismounts.
+
+
+
+
+--- MrDoubleA's NPC Pack v1.1.1 ---
+---          Changelog          ---
+
+--- Spikes ---
+- Changed enemy killing behaviour.
+- Changed in-editor animation.
+- Moved snow spikes into a subfolder.
+
+--- Chain Chomps ---
+- Added back in a missing file (npc-751.ini).
+
+--- Big Coins ---
+- Changed sound effects to the ones from Super Mario Maker 2, provided by Chipss.
+
+--- Custom Volcano Lotuses ---
+- Added Custom Volcano Lotuses.
+
+
+
+--- MrDoubleA's NPC Pack v1.1 ---
+---         Changelog         ---
+
+--- Spikes ---
+- Updated for beta 4.
+- Improved _info.txt (previously lacked properties for spike balls).
+- Spikes no longer kill themselves while throwing a ball and going upwards.
+- Slightly changed the balls' bouncing.
+- Added "throwSFX" field to configs for spikes.
+- Added "issnowball" and "islarge" fields to configs for balls.
+- Giant spikes and balls are now considered "heavy" NPCs.
+- Other general code changes.
+- Spike balls now enter clear pipes by default.
+- Updated editor descriptions for the spike balls to be more descriptive than two words.
+
+--- Chain Chomps ---
+- Added Hyper Chain Chomps, which have longer chains and are more aggresive.
+- Chained chained chomps now have optional "lungesToEscape" and "escapeID" fields in their configs to let the escape from their poles.
+- Very slightly changed _info.txt.
+- General code changes.
+
+--- Carryable Pipes ---
+- Added carryable pipes.
+
+--- Big Coins ---
+- Added big coins.

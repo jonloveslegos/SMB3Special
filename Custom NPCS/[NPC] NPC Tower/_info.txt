@@ -1,0 +1,36 @@
+---         NPC Tower         ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The NPC Tower can set what NPCs it contains through its extra settings. It should either be a list of IDs, like so:
+
+1, 1, 1, 1
+
+or a table of information, like so:
+
+165, {id = 437,direction = DIR_RIGHT}
+
+The properties that a table can contain are as follows:
+
+id                         The ID of the NPC (required).
+count                      How many of this NPC is spawned.
+
+friendly                   Triggers the effects of the "friendly" option in the editor.
+dontMove                   Triggers the effects of the "doesn't move" option in the editor.
+legacyBoss                 Triggers the effects of the "set as boss" option in the editor.
+msg                        Sets the NPC's message when talked to.
+                           
+layerName                  Sets the NPC's "current layer" option in the editor.
+attachedLayerName          Sets the NPC's "attach to layer" option in the editor (not to be confused with "layerName").
+activateEventName          Sets the NPC's "activate" option in the editor.
+deathEventName             Sets the NPC's "death" option in the editor.
+talkEventName              Sets the NPC's "talk" option in the editor.
+noMoreObjInLayer           Sets the NPC's "layer is empty" option in the editor.
+                           
+ai1                        Sets one of the NPC's behaviour-related properties (changes the NPC that the NPC contains for containers, parakoopa behaviour, and other special properties).
+ai2                        Sets one of the NPC's behaviour-related properties (changes some special properties).
+ai3,ai4,ai5                Sets one of the NPC's behaviour-related properties.
+                           
+direction                  The direction that the NPC is forced to face. Can be DIR_LEFT for left (or up for vertical NPCs) or DIR_RIGHT for right (or down for vertical NPCs).

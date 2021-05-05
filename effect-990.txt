@@ -1,0 +1,8 @@
+[1]
+import=AI_ARC
+frames=8
+framestyle=0
+maxSpeedX=0
+lifetime=50
+width=32
+height=32

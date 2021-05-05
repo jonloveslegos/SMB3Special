@@ -1,0 +1,23 @@
+---          Seesaws          ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The seesaw platforms have the following properties for NPC configs and npc-n.txt files:
+
+
+- isWeightBased (Defaults: true, false)
+Whether or not the NPC's rotation is affected by objects on top of it.
+- maxAngle (Defaults: 45, nil)
+The maximum angle the NPC will go to before bouncing back up. (Only affects weight-based platforms.)
+
+- solidBlockID (Default: 1007)
+The ID of the block used when the platform is completely straight.
+- leftSlopeBlockID (Default: 851)
+The ID of the block used when the platform is titled to the left.
+- rightSlopeBlockID (Default: 852)
+The ID of the block used when the platform is tilted to the right.
+
+- debug (Default: false)
+Enables a few debug features.

@@ -1,0 +1,260 @@
+{
+--[1]--
+{
+   ["player4lv"]=5,
+   ["past3Powerup"]=1,
+   ["player2lv"]=5,
+   ["levelXY"]=352,
+   ["player1c"]=1,
+   ["levelEnterUnlocked"]=false,
+   ["player2Pow"]=1,
+   ["player3lv"]=5,
+   ["player1lv"]=5,
+   ["player1Pow"]=4,
+   ["Card"]={2},
+   ["past4Powerup"]=1,
+   ["stamps"]={3},
+   ["past1Powerup"]=1,
+   ["__launcher"]={4},
+   ["player2c"]=2,
+   ["__costumes"]={5},
+   ["inventoryTable"]={6},
+   ["usePWing"]=false,
+   ["player4lc"]={"Vector2", 7},
+   ["__progress"]=2,
+   ["setCards"]=true,
+   ["_basegame"]={8},
+   ["player2lc"]={"Vector2", 9},
+   ["lastWarp"]=0,
+   ["player3c"]=3,
+   ["LevelEntered"]="1-2",
+   ["past2Powerup"]=1,
+   ["bonusCount"]=0,
+   ["player4Pow"]=1,
+   ["levelEnteredType"]="non",
+   ["player3lc"]={"Vector2", 10},
+   ["playerTurn"]=1,
+   ["levelPassInfo"]={11},
+   ["playerCount"]=1,
+   ["player1lc"]={"Vector2", 12},
+   ["player3Pow"]=1,
+   ["useStarman"]=false,
+   ["power"]=4,
+   ["player4c"]=4,
+   ["isMulti"]=false
+},
+--[2]--
+{
+   3,
+   2,
+   0,
+   ["count"]=2
+},
+--[3]--
+{
+   ["1-1.lvlx"]={13},
+   ["1-2.lvlx"]={14}
+},
+--[4]--
+{
+
+},
+--[5]--
+{
+
+},
+--[6]--
+{
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+},
+--[7]--
+{
+   "160:64"
+},
+--[8]--
+{
+   ["bigSwitch"]={15},
+   ["_characterdata"]={16},
+   ["starcoin"]={17},
+   ["hud"]={18},
+   ["starcoinCounter"]=5
+},
+--[9]--
+{
+   "160:64"
+},
+--[10]--
+{
+   "160:64"
+},
+--[11]--
+{
+   "1-1",
+   false,
+   "1-2",
+   false
+},
+--[12]--
+{
+   "352:0"
+},
+--[13]--
+{
+   false
+},
+--[14]--
+{
+   false
+},
+--[15]--
+{
+
+},
+--[16]--
+{
+   ["8"]={19},
+   ["10"]={20},
+   ["9"]={21},
+   ["6"]={22},
+   ["16"]={23},
+   ["11"]={24},
+   ["12"]={25},
+   ["7"]={26},
+   ["15"]={27},
+   ["13"]={28},
+   ["14"]={29}
+},
+--[17]--
+{
+   ["1-1.lvlx"]={30},
+   ["1-2.lvlx"]={31}
+},
+--[18]--
+{
+   ["score"]=76230
+},
+--[19]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[20]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[21]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[22]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[23]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[24]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[25]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[26]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[27]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[28]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[29]--
+{
+   ["reservePowerup"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1,
+   ["0x108"]=0
+},
+--[30]--
+{
+   0,
+   1,
+   1,
+   ["maxID"]=3,
+   ["alive"]={32}
+},
+--[31]--
+{
+   1,
+   1,
+   1,
+   ["maxID"]=3,
+   ["alive"]={33}
+},
+--[32]--
+{
+   true,
+   true,
+   true
+},
+--[33]--
+{
+   true,
+   true,
+   true
+}
+}

@@ -1,0 +1,15 @@
+{
+	"mainPage": "index.html",
+	
+	"allowedCharacters": [1],
+	
+	
+	"allowTwoPlayer": false,
+	"episodeIcon": "icon.png",
+	"allowPlayerSelection": false,
+	"collectable": "Starcoin",
+	"collectables": "Starcoins",
+	"starIcon": "starCoinFull.png",
+	"maxProgress": 116,
+	"credits": "You won't see this\nBecause I'm using mainPage\n This can override what's normally read in the .wld file for the episode credits\nbut is only used\n in the launcher\nnot in engine"
+}

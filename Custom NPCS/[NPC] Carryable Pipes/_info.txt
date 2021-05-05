@@ -1,0 +1,22 @@
+---          Bullies          ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The bully NPC has the following properties for NPC configs and npc-n.txt files:
+
+
+- wanderSpeed (Default: 1)
+The speed that the NPC wanders around its spawn position at.
+- wanderDistance (Default: 96)
+The maximum distance that the NPC can normally wander from its spawn position.
+
+- startChaseDistance (Default: 160)
+The distance a player needs to be in for the NPC to start chasing them.
+- stopChaseDistance (Default: 224)
+
+- chaseSpeed (Default: 3.5)
+The maximum speed the NPC will chase a player at.
+- chaseAcceleration (Default: 0.08)
+How fast the NPC accelerates while chasing a player.

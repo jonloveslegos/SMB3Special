@@ -1,0 +1,43 @@
+---   Custom Volcano Lotuses  ---
+--- from MrDoubleA's NPC Pack ---
+---       (Give credit!)      ---
+
+
+
+The Volcano Lotus NPCs have the following properties for NPC configs and npc-n.txt files:
+
+
+- idleTime (Default: 170)
+How long the NPC is in its idle state.
+
+- flashTime (Default: 70)
+How long the NPC is in its flashing state.
+
+- flashTime (Default: 50)
+How long the NPC is in its spurting state.
+
+- spurtNPCID
+ID of the NPCs spawned when spurting.
+
+- spurtNPCSpawns (Default: 4)
+How many NPCs are spawned when spurting.
+
+- isHorizontal
+Whether or not this NPC is horizontal.
+
+- isWinged
+Whether or not this NPC can fly around and chase the player.
+
+
+
+The fireball NPCs have the following properties for NPC configs and npc-n.txt files:
+
+
+- gravity (Default: 0.02)
+How fast the NPC gains downward speed.
+
+- terminalVelocity (Default: 2)
+Max downwards speed for the NPC.
+
+- trembleSpeed (Default: 0.8)
+How fast the NPC moves back and forth.
