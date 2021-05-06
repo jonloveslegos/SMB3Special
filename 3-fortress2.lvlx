@@ -3,8 +3,8 @@ TL:"3-fortress2";CPID:"SMBX2";
 HEAD_END
 SECTION
 SC:0;L:-200000;R:-199200;T:-200600;B:-200000;MZ:3;MF:"";BG:42;
-SC:1;L:-180000;R:-178336;T:-180600;B:-180000;MZ:3;MF:"";BG:7;UW:1;XTRA:"{\n    \"darkness\"\: {\n        \"addbright\"\: true\,\n        \"ambient\"\: \"#b0b4ffe6\"\,\n        \"enableDarkness\"\: true\n    }\,\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
-SC:2;L:-160000;R:-158368;T:-160600;B:-160000;MZ:3;MF:"";BG:7;UW:1;XTRA:"{\n    \"darkness\"\: {\n        \"ambient\"\: \"#b0b4ffe6\"\,\n        \"enableDarkness\"\: true\n    }\,\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
+SC:1;L:-180000;R:-178336;T:-180600;B:-180000;MZ:3;MF:"";BG:3;UW:1;XTRA:"{\n    \"darkness\"\: {\n        \"addbright\"\: true\,\n        \"ambient\"\: \"#b0b4ffe6\"\,\n        \"enableDarkness\"\: true\n    }\,\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
+SC:2;L:-160000;R:-158368;T:-160600;B:-160000;MZ:3;MF:"";BG:3;UW:1;XTRA:"{\n    \"darkness\"\: {\n        \"ambient\"\: \"#b0b4ffe6\"\,\n        \"enableDarkness\"\: true\n    }\,\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
 SC:3;L:-140000;R:-138912;T:-140600;B:-140000;MZ:3;MF:"";BG:42;
 SC:4;L:-120000;R:-119200;T:-120600;B:-120000;MZ:0;MF:"";BG:0;
 SECTION_END
