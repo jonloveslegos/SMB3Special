@@ -163,7 +163,7 @@ end
 function ceilingBeetle.onTickShellNPC(v)
 	local timer = 2 
 	v.y = v.y-2
-	if v.speedX ~= 0 then
+	if math.floor(v.speedX) ~= 0 then
 		local pastSY = v.speedY
 		v.speedY = 0
 		for k,a in Block.iterateIntersecting(v.x+v.speedX, v.y, v.x+v.width+v.speedX, v.y+v.height) do
@@ -230,7 +230,7 @@ function ceilingBeetle.onTickShellNPC(v)
 		end
 	end
 	
-	if data.isdropped and v.collidesBlockBottom and v.speedX == 0 then
+	if data.isdropped and v.collidesBlockBottom and math.floor(v.speedX) == 0 then
 		data.isdropped = false
 		npcutils.faceNearestPlayer(v)
 		
