@@ -1091,17 +1091,17 @@ function onEvent(eventName)
         autoscroll.scrollRight(1)
     end
     if eventName == "bonusItems" then
-        if starCoinTotal > 3*8 and SaveData.bonusCount < 1 then
+        if starCoinTotal >= 3*8 and SaveData.bonusCount < 1 then
             inventory.addPowerUp(0, 3)
             Text.showMessageBox("You got 3 Mushrooms!")
             SaveData.bonusCount = SaveData.bonusCount+1
         end
-        if starCoinTotal > 3*(8+9) and SaveData.bonusCount < 2 then
+        if starCoinTotal >= 3*(8+9) and SaveData.bonusCount < 2 then
             inventory.addPowerUp(1, 3)
             Text.showMessageBox("You got 3 FireFlowers!")
             SaveData.bonusCount = SaveData.bonusCount+1
         end
-        if starCoinTotal > 3*(8+9+12) and SaveData.bonusCount < 3 then
+        if starCoinTotal >= 3*(8+9+12) and SaveData.bonusCount < 3 then
             inventory.addPowerUp(2, 3)
             Text.showMessageBox("You got 3 Raccoon Leafs!")
             SaveData.bonusCount = SaveData.bonusCount+1
