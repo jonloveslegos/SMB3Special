@@ -385,7 +385,11 @@ do
         elseif reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0) then
             if config.shellID > 0 then
                 turnIntoShell(v)
-                launchShell(v,culprit,true)
+                if reason == HARM_TYPE_FROMBELOW then
+                    launchShell(v,player,true)
+                else
+                    launchShell(v,culprit,true)
+                end
                 eventObj.cancelled = true
             end
 
@@ -687,8 +691,11 @@ do
 
 
         if reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0) then
-            launchShell(v,culprit,true)
-
+            if reason == HARM_TYPE_FROMBELOW then
+                launchShell(v,player,true)
+            else
+                launchShell(v,culprit,true)
+            end
             data.wakeUpTimer = 0
 
             if reason == HARM_TYPE_TAIL then

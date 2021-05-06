@@ -229,15 +229,25 @@ function ceilingBeetle.onTickShellNPC(v)
 			data.isdropped = false
 		end
 	end
-	
-	if data.isdropped and v.collidesBlockBottom and math.floor(v.speedX) == 0 then
-		data.isdropped = false
-		npcutils.faceNearestPlayer(v)
+	for k,a in Block.iterateIntersecting(v.x+v.speedX, v.y, v.x+v.width+v.speedX, v.y+v.height) do
+		if Colliders.speedCollide(a,v) then 
+			if data.isdropped and round(v.speedX) == 0 then
+				data.isdropped = false
+				npcutils.faceNearestPlayer(v)
 		
-		v.speedX = data.xspeed * v.direction
+				v.speedX = data.xspeed * v.direction
+			end
+		end
 	end
+	
 end
-
+function round(float)
+    local int, part = math.modf(float)
+    if float == math.abs(float) and part >= .5 then return int+1    -- positive float
+    elseif part <= -.5 then return int-1                            -- negative float
+    end
+    return int
+end
 function ceilingBeetle.onDrawShellNPC(v)
 	if v.speedX == 0 then
 		v.animationFrame = 0
