@@ -482,7 +482,14 @@ function onTick()
            end
         end
     end
-
+    local bumpBlocks = Block.get(753)
+    if tablelength(bumpBlocks) > 0 then
+        for i=1,tablelength(bumpBlocks) do
+            if bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
+                bumpBlocks[i]:hit(false,player,1)
+            end
+        end
+    end
     if raiseWater == true then
         if waterHeight > 98 then
             waterDir = -1

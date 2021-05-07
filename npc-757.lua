@@ -34,7 +34,7 @@ local burnerBottomSettings = {
 	harmlessgrab = false,
 	harmlessthrown = false,
 
-	fireID = 765,
+	fireID = 750,
 	fireDirection = 1,
 	cooldown = 256,
 }
