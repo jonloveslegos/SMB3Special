@@ -186,7 +186,7 @@ ID:994;X:-199456;Y:-200544;W:32;H:32;
 ID:994;X:-199424;Y:-200576;W:32;H:32;
 BLOCK_END
 NPC
-ID:94;X:-199968;Y:-200086;D:1;MG:"You can go back by going off-screen!\nOr you can find a way to get past these rocks if you find a Ice Flower!\nBut once you go through\, you will lose the hammer suit!";FD:1;
+ID:94;X:-199968;Y:-200086;D:1;MG:"You can go back by going off-screen!\nOr you can find a way to get past these rocks if you find a Hammer!\nBut once you go through\, you will lose the Hammer!";FD:1;
 ID:178;X:-199264;Y:-200096;D:-1;ED:"EndRock";
 NPC_END
 LAYERS

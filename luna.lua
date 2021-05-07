@@ -50,7 +50,7 @@ local gotStamp = false
 local camOffset = 0
 local CamOffDir = 1
 local teleToSecret = false
-local downTimer = 360
+local downTimer = 300
 local playerHit = false
 local uibox = Graphics.loadImage(Misc.resolveFile("smb3overhaul/back.png"))
 function tableContains(table, element)
@@ -370,7 +370,7 @@ function onTickEnd()
             end
         end
     else
-        downTimer = 360
+        downTimer = 300
     end
     counter = counter-1
     if Level.filename() ~= "rock path.lvlx" and counter <= 0 then
@@ -486,7 +486,17 @@ function onTick()
     if tablelength(bumpBlocks) > 0 then
         for i=1,tablelength(bumpBlocks) do
             if bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
-                bumpBlocks[i]:hit(false,player,1)
+                Block.spawn(752,bumpBlocks[i].x,bumpBlocks[i].y)
+                bumpBlocks[i]:remove(false)
+            end
+        end
+    end
+    local bumpBlocks = Block.get(751)
+    if tablelength(bumpBlocks) > 0 then
+        for i=1,tablelength(bumpBlocks) do
+            if  player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
+                Block.spawn(750,bumpBlocks[i].x,bumpBlocks[i].y)
+                bumpBlocks[i]:remove(false)
             end
         end
     end
@@ -1003,7 +1013,7 @@ function onEvent(eventName)
             SaveData.levelPassInfo = tale
         end
         inventory.addPowerUp(5, 1)
-        Text.showMessageBox("You got a Ice Flower!")
+        Text.showMessageBox("You got a Hammer!")
     end
     if eventName == "starman" then
         if SaveData.levelEnterUnlocked == true then return end
@@ -1126,21 +1136,21 @@ function onEvent(eventName)
             SaveData.levelPassInfo = tale
         end
         if SaveData.playerTurn == 1 and player.powerup == PLAYER_ICE then
-            Text.showMessageBox("Your lost your Ice Flower!")
+            Text.showMessageBox("Your lost your Hammer!")
             player.powerup = SaveData.past1Powerup
         elseif SaveData.playerTurn == 2 then
             if player.powerup == PLAYER_ICE then
-                Text.showMessageBox("Your lost your Ice Flower!")
+                Text.showMessageBox("Your lost your Hammer!")
                 player.powerup = SaveData.past2Powerup
             end
         elseif SaveData.playerTurn == 3 then
             if player.powerup == PLAYER_ICE then
-                Text.showMessageBox("Your lost your Ice Flower!")
+                Text.showMessageBox("Your lost your Hammer!")
                 player.powerup = SaveData.past3Powerup
             end
         elseif SaveData.playerTurn == 4 then
             if player.powerup == PLAYER_ICE then
-                Text.showMessageBox("Your lost your Ice Flower!")
+                Text.showMessageBox("Your lost your Hammer!")
                 player.powerup = SaveData.past4Powerup
             end
         end

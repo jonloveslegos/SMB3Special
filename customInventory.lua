@@ -155,18 +155,16 @@ function inventory.onDrawWorld()
 
 	-- Scaling the sprites --
 	if bScale > 0 then
-		for i = 1, 9, 1 do
-			Graphics.draw{
-				type = RTYPE_IMAGE,
-				image = invBack,
-				x = (((i-1) * 82 + 94)*0.9)-12.5,
-				y = 478-37,
-				sourceY = 0,
-				sourceHeight = 90,
-				sourceX = 0,
-				sourceWidth = 61
-			}
-		end
+		Graphics.draw{
+			type = RTYPE_IMAGE,
+			image = invBack,
+			x = 66,
+			y = 478-37,
+			sourceY = 0,
+			sourceHeight = 90,
+			sourceX = 0,
+			sourceWidth = 668
+		}
 	end
 
 	if cScale > 0 then
