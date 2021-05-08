@@ -10,10 +10,19 @@ local starCoinTotal = SaveData._basegame.starcoinCounter
 local map = require("map")
 local sec0 = Section(0)
 local raiseWater = false
+local Block1X = -1
+local Block2X = -1
+local random1 = -1
+local randomizeBoxesSpeed = 3
+local random2 = -1
+local Block1Y = -1
+local Block2Y = -1
 local movingLayerCounter = 0
 local movingLayerDir = 1
 local waterMove = 0
 local waterDir = 1
+local randomizeBoxes = false
+local randomizeBoxesCount = 5
 local hitSound = SFX.open("block-hit.ogg")
 local cameraOffset = 0
 local waterHeight = 0
@@ -23,6 +32,7 @@ local counter = 3
 local usePBar = true;
 local camlock = require("camlock")
 local pbarCount = 0;
+local randomizeBoxesStep = 1
 local reduceTimer = 6;
 local lastpowerup = 0;
 local stampCollect = Misc.resolveSoundFile("starcoin-collect")
@@ -151,6 +161,10 @@ function onLoadSection(playerIdx)
             if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
                 if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
                     Text.showMessageBox(npcs[i].msg)
+                    if tablelength(Block.get(749)) > 0 then 
+                        randomizeBoxes = true
+                        randomizeBoxesCount = 5
+                    end
                 end
             end
         end
@@ -161,6 +175,10 @@ function onLoadSection(playerIdx)
             if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
                 if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
                     Text.showMessageBox(npcs[i].msg)
+                    if tablelength(Block.get(749)) > 0 then 
+                        randomizeBoxes = true
+                        randomizeBoxesCount = 5
+                    end
                 end
             end
         end
@@ -415,6 +433,56 @@ function onTick()
     if player == nil then 
         return 
     end
+    if randomizeBoxes == true and randomizeBoxesCount > 0 then
+        if randomizeBoxesStep == 1 then
+            random1 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            random2 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            while random2==random1 do
+                random2 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            end
+            Block1X = random1.x
+            Block2X = random2.x
+            Block1Y = random1.y
+            Block2Y = random2.y
+            random1.x = Block1X
+            random2.x = Block2X
+            random2.y = Block1Y-64
+            random1.y = Block2Y-64
+            randomizeBoxesStep = 30
+        elseif randomizeBoxesStep == 2 then
+            randomizeBoxesStep = -30
+            randomizeBoxesCount = randomizeBoxesCount-1
+            random2.y = Block1Y
+            random1.y = Block2Y
+        elseif randomizeBoxesStep > 0 then
+            if random2.x > Block1X then 
+                random2.x = random2.x-randomizeBoxesSpeed
+                if random2.x < Block1X then random2.x = Block1X end
+            end
+            if random2.x < Block1X then 
+                random2.x = random2.x+randomizeBoxesSpeed
+                if random2.x > Block1X then random2.x = Block1X end
+            end
+            if random1.x > Block2X then 
+                random1.x = random1.x-randomizeBoxesSpeed
+                if random1.x < Block2X then random1.x = Block2X end
+            end
+            if random1.x < Block2X then 
+                random1.x = random1.x+randomizeBoxesSpeed
+                if random1.x > Block2X then random1.x = Block2X end
+            end
+            if random1.x == Block2X and random2.x == Block1X then 
+                randomizeBoxesStep = 2 
+                randomizeBoxesSpeed = randomizeBoxesSpeed*2
+            end
+        elseif randomizeBoxesStep < 1 then
+            randomizeBoxesStep = randomizeBoxesStep+1
+        end
+        player.speedX = 0
+        player.speedY = 0
+    elseif randomizeBoxes == true then
+        randomizeBoxes = false
+    end
     if teleToSecret == true then
         for i=1, tablelength(BGO.get()) do
             if table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(11)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(12)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(61)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(60)[i]) then
@@ -496,6 +564,15 @@ function onTick()
         for i=1,tablelength(bumpBlocks) do
             if  player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
                 Block.spawn(750,bumpBlocks[i].x,bumpBlocks[i].y)
+                bumpBlocks[i]:remove(false)
+            end
+        end
+    end
+    local bumpBlocks = Block.get(749)
+    if tablelength(bumpBlocks) > 0 then
+        for i=1,tablelength(bumpBlocks) do
+            if  player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
+                Block.spawn(752,bumpBlocks[i].x,bumpBlocks[i].y)
                 bumpBlocks[i]:remove(false)
             end
         end
@@ -1104,6 +1181,49 @@ function onEvent(eventName)
         end
         Text.showMessageBox(random.."-Ups!")
     end
+    if eventName == "0 1-up" then
+        if SaveData.levelEnterUnlocked == true then return end
+        local levelEntertitle = SaveData.LevelEntered
+        local tale = SaveData.levelPassInfo
+        if tale ~= nil then
+            tale[table.ifind(tale,SaveData.LevelEntered)+1] = true
+            SaveData.levelPassInfo = tale
+        end
+        random = 0
+        Text.showMessageBox(random.."-Ups!")
+    end
+    if eventName == "3 1-up" then
+        if SaveData.levelEnterUnlocked == true then return end
+        local levelEntertitle = SaveData.LevelEntered
+        local tale = SaveData.levelPassInfo
+        if tale ~= nil then
+            tale[table.ifind(tale,SaveData.LevelEntered)+1] = true
+            SaveData.levelPassInfo = tale
+        end
+        random = 3
+        for i=1,random do
+            NPC.spawn(90, player.x, player.y+16, player.section)
+        end
+        Text.showMessageBox(random.."-Ups!")
+    end
+    if eventName == "5 1-up" then
+        if SaveData.levelEnterUnlocked == true then return end
+        local levelEntertitle = SaveData.LevelEntered
+        local tale = SaveData.levelPassInfo
+        if tale ~= nil then
+            tale[table.ifind(tale,SaveData.LevelEntered)+1] = true
+            SaveData.levelPassInfo = tale
+        end
+        random = 5
+        for i=1,random do
+            NPC.spawn(90, player.x, player.y+16, player.section)
+        end
+        Text.showMessageBox(random.."-Ups!")
+    end
+    if eventName == "startBoxes" then
+        randomizeBoxes = true
+        randomizeBoxesCount = 5
+    end
     if eventName == "autoscroll" then
         autoscroll.scrollRight(1)
     end
@@ -1188,7 +1308,7 @@ function onNPCKill(eventToken,killedNPC,harmtype)
     end
 end
 function onExitLevel(win)
-    if Level.filename() ~= "midsection.lvlx" and Level.filename() ~= "1-fortress.lvlx" then
+    if string.find(Level.filename(),"-toad") == nil and Level.filename() ~= "slotgame.lvlx" and Level.filename() ~= "rock path.lvlx" and Level.filename() ~= "pipeSection.lvlx" and Level.filename() ~= "midsection.lvlx" and Level.filename() ~= "1-fortress.lvlx" then
         updatePlayerTurn()
     end
     if Level.name() == "1-1" then
