@@ -61,7 +61,7 @@ function OneWayBillCannon.onTickNPC(v)
 	else
 		data.waitingframe = data.waitingframe + 1
 	end
-	if data.waitingframe > NPC.config[npcID].shootrate then
+	if data.waitingframe > NPC.config[npcID].shootrate and tablelength(Player.getIntersecting(v.x-32,v.y-320,v.x+32+v.width,v.y+320+v.height)) <= 0 then
 		v1 = NPC.spawn(17,v.x,v.y+2,player.section)
 		if player2 then
 			if player.section ~= player2.section then
@@ -74,5 +74,9 @@ function OneWayBillCannon.onTickNPC(v)
 		data.waitingframe = 0
 	end
 end
-
+function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
 return OneWayBillCannon

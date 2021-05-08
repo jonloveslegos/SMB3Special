@@ -444,6 +444,10 @@ function onTick()
             while random2==random1 do
                 random2 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
             end
+            random3 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            while random3==random1 or random3==random2 do
+                random3 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            end
             Block1X = random1.x
             Block2X = random2.x
             Block1Y = random1.y
@@ -451,6 +455,7 @@ function onTick()
             random1.x = Block1X
             random2.x = Block2X
             random2.y = Block1Y-64
+            random3.y = Block1Y-64
             random1.y = Block2Y-64
             randomizeBoxesStep = 30
         elseif randomizeBoxesStep == 2 then
@@ -458,6 +463,7 @@ function onTick()
             randomizeBoxesCount = randomizeBoxesCount-1
             random2.y = Block1Y
             random1.y = Block2Y
+            random3.y = Block1Y
         elseif randomizeBoxesStep > 0 then
             if random2.x > Block1X then 
                 random2.x = random2.x-randomizeBoxesSpeed
@@ -477,7 +483,7 @@ function onTick()
             end
             if random1.x == Block2X and random2.x == Block1X then 
                 randomizeBoxesStep = 2 
-                randomizeBoxesSpeed = randomizeBoxesSpeed*2
+                randomizeBoxesSpeed = randomizeBoxesSpeed*1.4
             end
         elseif randomizeBoxesStep < 1 then
             randomizeBoxesStep = randomizeBoxesStep+1

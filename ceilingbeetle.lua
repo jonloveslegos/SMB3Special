@@ -229,7 +229,8 @@ function ceilingBeetle.onTickShellNPC(v)
 			data.isdropped = false
 		end
 	end
-	for k,a in Block.iterateIntersecting(v.x+v.speedX, v.y, v.x+v.width+v.speedX, v.y+v.height) do
+	if data.isdropped and round(v.speedX) == 0 and round(v.speedY) == 0 then v.speedY = 3 end
+	for k,a in Block.iterateIntersecting(v.x+v.speedX, v.y, v.x+v.width+v.speedX, v.y+v.height+v.speedY) do
 		if Colliders.speedCollide(a,v) then 
 			if data.isdropped and round(v.speedX) == 0 then
 				data.isdropped = false
