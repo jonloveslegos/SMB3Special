@@ -563,7 +563,7 @@ function onTick()
     local bumpBlocks = Block.get(753)
     if tablelength(bumpBlocks) > 0 then
         for i=1,tablelength(bumpBlocks) do
-            if bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
+            if player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
                 Block.spawn(752,bumpBlocks[i].x,bumpBlocks[i].y)
                 bumpBlocks[i]:remove(false)
             end
