@@ -408,6 +408,10 @@ function onTickEnd()
             Text.showMessageBox("You can't bring that powerup here! I will put it back for you!")
             player.powerup = SaveData.past4Powerup
             inventory.addPowerUp(5, 1)
+        elseif player.powerup == PLAYER_ICE then
+            Text.showMessageBox("You can't bring that powerup here! I will put it back for you!")
+            player.powerup = SaveData.past1Powerup
+            inventory.addPowerUp(5, 1)
         end
     end
 end
