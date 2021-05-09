@@ -57,9 +57,9 @@ if SaveData.player2c == nil then SaveData.player2c = 2 end
 if SaveData.player3c == nil then SaveData.player3c = 3 end
 if SaveData.player4c == nil then SaveData.player4c = 4 end
 if SaveData.stamps == nil then SaveData.stamps = {} end
-
 function onStart()
 	warned = false
+	
 	if SaveData.player1lc == nil then SaveData.player1lc = vector(world.playerX,world.playerY) end
 	if SaveData.player2lc == nil then SaveData.player2lc = vector(world.playerX,world.playerY) end
 	if SaveData.player3lc == nil then SaveData.player3lc = vector(world.playerX,world.playerY) end
@@ -162,8 +162,137 @@ function onStart()
 		end
 		SaveData.levelPassInfo = tale--]]
 	end
+	--[[local Hammers = Level.get(13)
+	if tablelength(Hammers) > 0 then
+		for i=1,tablelength(Hammers) do
+			local leftOption = false
+			local downOption = false
+			local upOption = false
+			local rightOption = false
+			local levelsBlock = Level.get()
+			if tablelength(levelsBlock) > 0 then
+				for e=1,tablelength(levelsBlock) do
+					if levelsBlock[e].x == Hammers[i].x-64 and levelsBlock[e].y == Hammers[i].y then leftOption = true end
+					if levelsBlock[e].x == Hammers[i].x+64 and levelsBlock[e].y == Hammers[i].y then rightOption = true end
+					if levelsBlock[e].y == Hammers[i].y-64 and levelsBlock[e].x == Hammers[i].x then upOption = true end
+					if levelsBlock[e].y == Hammers[i].y+64 and levelsBlock[e].x == Hammers[i].x then downOption = true end
+				end
+			end
+			if tablelength(Path.getIntersecting(Hammers[i].x-64,Hammers[i].y,Hammers[i].x-33,Hammers[i].y+64)) > 0 then leftOption = true end
+			if tablelength(Path.getIntersecting(Hammers[i].x+64,Hammers[i].y,Hammers[i].x+96,Hammers[i].y+64)) > 0 then rightOption = true end
+			if tablelength(Path.getIntersecting(Hammers[i].x,Hammers[i].y-96,Hammers[i].x+64,Hammers[i].y-33)) > 0 then upOption = true end
+			if tablelength(Path.getIntersecting(Hammers[i].x,Hammers[i].y+96,Hammers[i].x+64,Hammers[i].y+96)) > 0 then downOption = true end
+			if leftOption == true then
+				if rightOption == true then
+					if upOption == true then
+						if downOption == true then
+							local numberRNG = RNG.random(1,4)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 3 then Hammers[i].y = Hammers[i].y-64
+							elseif numberRNG == 4 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,3)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 3 then Hammers[i].y = Hammers[i].y-64
+							end
+						end
+					else
+						if downOption == true then
+							local numberRNG = RNG.random(1,3)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 3 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].x = Hammers[i].x+64 
+							end
+						end
+					end
+				else
+					if upOption == true then
+						if downOption == true then
+							local numberRNG = RNG.random(1,3)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y-64
+							elseif numberRNG == 3 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y-64
+							end
+						end
+					else
+						if downOption == true then
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,1)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x-64 
+							end
+						end
+					end
+				end
+			else
+				if rightOption == true then
+					if upOption == true then
+						if downOption == true then
+							local numberRNG = RNG.random(1,3)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y-64
+							elseif numberRNG == 3 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y-64
+							end
+						end
+					else
+						if downOption == true then
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x+64 
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,1)
+							if numberRNG == 1 then Hammers[i].x = Hammers[i].x+64 
+							end
+						end
+					end
+				else
+					if upOption == true then
+						if downOption == true then
+							local numberRNG = RNG.random(1,2)
+							if numberRNG == 1 then Hammers[i].y = Hammers[i].y-64
+							elseif numberRNG == 2 then Hammers[i].y = Hammers[i].y+64
+							end
+						else
+							local numberRNG = RNG.random(1,1)
+							if numberRNG == 1 then Hammers[i].y = Hammers[i].y-64
+							end
+						end
+					else
+						if downOption == true then
+							local numberRNG = RNG.random(1,1)
+							if numberRNG == 1 then Hammers[i].y = Hammers[i].y+64
+							end
+						end
+					end
+				end
+			end
+		end
+	end--]]
 end
 function onTick()
+	
 	Progress.value = SaveData._basegame.starcoinCounter
 	if SaveData.playerCount == 1 and SaveData.isMulti == true then
 		SaveData.playerCount = 2 
@@ -178,7 +307,29 @@ function onTick()
 	if SaveData.playerTurn == 4 and SaveData.playerCount < 4 then
 		SaveData.playerTurn = 1
 	end
-	
+	--[[local hammers = Level.get(13)
+	if tablelength(hammers) > 0 then
+		for i=1,tablelength(hammers) do
+			local tale = SaveData.levelPassInfo
+			if tale ~= nil then
+				if table.ifind(tale,hammers[i].title) ~= nil then
+					if tale[table.ifind(tale,hammers[i].title)+1] == false then
+						if world.playerX == hammers[i].x and world.playerY == hammers[i].y then
+							player.keys.jump = KEYS_PRESSED
+						end
+					end
+				else
+					if world.playerX == hammers[i].x and world.playerY == hammers[i].y then
+						player.keys.jump = KEYS_PRESSED
+					end
+				end
+			else
+				if world.playerX == hammers[i].x and world.playerY == hammers[i].y then
+					player.keys.jump = KEYS_PRESSED
+				end
+			end
+		end
+	end]]
 	if SaveData.playerTurn == 1 then 
 		player:transform(SaveData.player1c,false)
 		--player.character = SaveData.player1c 
