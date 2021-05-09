@@ -28,19 +28,19 @@ npcManager.registerHarmTypes(npcID,
 	{
 		HARM_TYPE_JUMP,
 		--HARM_TYPE_FROMBELOW,
-		--HARM_TYPE_NPC,
+		HARM_TYPE_NPC,
 		--HARM_TYPE_PROJECTILE_USED,
 		--HARM_TYPE_LAVA,
 		--HARM_TYPE_HELD,
-		--HARM_TYPE_TAIL,
-		--HARM_TYPE_SPINJUMP,
+		HARM_TYPE_TAIL,
+		HARM_TYPE_SPINJUMP,
 		--HARM_TYPE_OFFSCREEN,
 		--HARM_TYPE_SWORD
 	}, 
 	{
-		--[HARM_TYPE_JUMP]=10,
+		--[HARM_TYPE_JUMP]=853,
 		--[HARM_TYPE_FROMBELOW]=10,
-		--[HARM_TYPE_NPC]=10,
+		--[HARM_TYPE_NPC]=853,
 		--[HARM_TYPE_PROJECTILE_USED]=10,
 		--[HARM_TYPE_LAVA]={id=13, xoffset=0.5, xoffsetBack = 0, yoffset=1, yoffsetBack = 1.5},
 		--[HARM_TYPE_HELD]=10,
@@ -69,38 +69,33 @@ function npc.onTickNPC(v)
 
 	if not data.initialized then
 		data.initialized = true
+		data.dir = v.direction
+		data.turned = false
+		v.speedX = data.dir *4
 	end	
     --Chase player
-	if player.x > v.x then
+	if data.dir == 1 then
 		v.speedX = v.speedX + 0.2*1
-	elseif player.x < v.x then
+	elseif data.dir == -1 then
 		v.speedX = v.speedX + 0.2*-1
+	end
+	if player.x > v.x+64 and data.turned == false and data.dir == -1 then
+		data.turned = true
+		data.dir = 1
+	elseif player.x < v.x-64 and data.turned == false and data.dir == 1 then
+		data.turned = true
+		data.dir = -1
 	end
 	if v.speedX > 4 then
 	    v.speedX=4
 	elseif v.speedX < -4 then
 	    v.speedX=-4	
 	end
-	--Smoke Effect
-	if data.waiter == nil then
-	    data.waiter = 0
-	end
-	data.waiter = data.waiter+1
-	if data.waiter == 5 then
-	    if v.direction == -1 then
-	        local effect = Animation.spawn(74, v.x+24, v.y+10)
-		    effect.speedX=1
-        else
-	        local effect = Animation.spawn(74, v.x-1, v.y+10)
-		    effect.speedX=-1		
-	    end
-		data.waiter=0
-	end
 end
 
 function npc.onNPCHarm(_,v,_,_)
     if v.id == npcID then
-	    local effect = Animation.spawn(753, v.x, v.y)
+	    local effect = Animation.spawn(853, v.x, v.y)
     end		
 end
 

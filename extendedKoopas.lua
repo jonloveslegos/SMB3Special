@@ -346,7 +346,7 @@ do
         if reason == HARM_TYPE_JUMP then
             if config.nonWingedKoopaID > 0 then
                 v:transform(config.nonWingedKoopaID)
-                
+                v.speedY = 0
                 eventObj.cancelled = true
             elseif config.beachKoopaID > 0 then
                 -- Turn into beach koopa

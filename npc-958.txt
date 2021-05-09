@@ -1,2 +1,3 @@
-grid=8
-ignorePlayers=true
+grid=16
+gridoffsetx=8
+ignoreplayers=true

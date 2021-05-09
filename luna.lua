@@ -60,6 +60,7 @@ local gotStamp = false
 local camOffset = 0
 local CamOffDir = 1
 local teleToSecret = false
+local isPswitch = false
 local downTimer = 300
 local playerHit = false
 local uibox = Graphics.loadImage(Misc.resolveFile("smb3overhaul/back.png"))
@@ -436,6 +437,31 @@ end
 function onTick()
     if player == nil then 
         return 
+    end
+    if isPswitch == true then
+        local npcs = NPC.get(995)
+        if tablelength(npcs) > 0 then
+            for i=1, tablelength(npcs) do
+                npcs[i]:transform(996)
+            end
+        end
+        if tablelength(NPC.get(996)) > 0 then
+            for i=1, tablelength(NPC.get(996)) do
+                NPC.get(996)[i].isHidden = false
+            end
+        end
+    else
+        local npcs = NPC.get(996)
+        if tablelength(npcs) > 0 then
+            for i=1, tablelength(npcs) do
+                npcs[i]:transform(995)
+            end
+        end
+        if tablelength(NPC.get(995)) > 0 then
+            for i=1, tablelength(NPC.get(995)) do
+                NPC.get(995)[i].isHidden = true
+            end
+        end
     end
     if randomizeBoxes == true and randomizeBoxesCount > 0 then
         if randomizeBoxesStep == 1 then
@@ -1021,6 +1047,7 @@ function onEvent(eventName)
                 NPC.get(996)[i].isHidden = false
             end
         end
+        isPswitch = true
 	end
     if eventName == "P Switch - End" then
 		local npcs = NPC.get(996)
@@ -1034,7 +1061,7 @@ function onEvent(eventName)
                 NPC.get(995)[i].isHidden = true
             end
         end
-        
+        isPswitch = false
 	end
     if eventName == "mushroom" then
         if SaveData.levelEnterUnlocked == true then return end
