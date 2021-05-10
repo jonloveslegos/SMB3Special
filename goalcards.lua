@@ -91,7 +91,7 @@ function smb3cardRemake.onTick()
                 else
                     mem(0x00B2C5AC, FIELD_FLOAT, (lives + 1))
                     SFX.play(15)
-                    howMuchLives = 15
+                    howMuchLives = 1
                 end
                 endLives = true
             end
