@@ -1327,6 +1327,9 @@ function onNPCKill(eventToken,killedNPC,harmtype)
     if killedNPC.id == 800 and harmtype == HARM_TYPE_JUMP then
         NPC.spawn(799,killedNPC.x,killedNPC.y)
     end
+    if killedNPC.id == 47 then
+        NPC.spawn(47,killedNPC.x-(camera.width-64),killedNPC.y)
+    end
     if killedNPC.id == 990 and gotStamp == false and harmtype == HARM_TYPE_VANISH and tablelength(Player.getIntersecting(killedNPC.x,killedNPC.y,killedNPC.x+killedNPC.width,killedNPC.y+killedNPC.height)) > 0 then
         gotStamp = true
         SFX.play(stampCollect)
