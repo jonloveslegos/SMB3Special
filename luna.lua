@@ -12,6 +12,11 @@ local sec0 = Section(0)
 local raiseWater = false
 local Block1X = -1
 local Block2X = -1
+local delayedHitCount = 0
+local delayedHit = false
+local delayedHitX = 0
+local delayedHitY = 0
+local delayedHitTimer = 0
 local random1 = -1
 local randomizeBoxesSpeed = 3
 local random2 = -1
@@ -662,6 +667,27 @@ function onTick()
         for i = 1, tablelength(fireballs) do
             fireballs[i].speedY = -1
         end
+    end
+    local fireballs = NPC.get(794)
+    if tablelength(fireballs) > 0 then
+        for i = 1, tablelength(fireballs) do
+            delayedHit = true
+            delayedHitCount = 3
+            delayedHitTimer = 0
+            delayedHitX = fireballs[i].x
+            delayedHitY = fireballs[i].y
+            fireballs[i]:kill()
+        end
+    end
+    if delayedHit == true then delayedHitTimer = delayedHitTimer -1 end
+    if delayedHit == true and delayedHitTimer <= 0 then
+        local blockspawned = Block.spawn(5, delayedHitX, delayedHitY)
+        blockspawned.contentID=1090
+        blockspawned:hit(false,player,1)
+        delayedHitTimer = 50
+        blockspawned:delete()
+        delayedHitCount = delayedHitCount - 1
+        if delayedHitCount <= 0 then delayedHit = false end
     end
     --[[local blocks = Block.get(997)
     if tablelength(blocks) > 0 then

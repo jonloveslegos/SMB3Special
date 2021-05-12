@@ -62,32 +62,34 @@ function burnerLeft.onTickNPC(v)
 	local data = v.data
 	data.width = data.width or NPC.config[v.id].gfxwidth
 	data.height = data.height or NPC.config[v.id].gfxheight
-	if v.speedX > 0 then
-		v.speedX = v.speedX-0.2
-		if v.speedX < 0 then v.speedX = 0 end
-	elseif v.speedX < 0 then
-		v.speedX = v.speedX+0.2
-		if v.speedX > 0 then v.speedX = 0 end
+	data.speedX = data.speedX or v.speedX
+	if data.speedX > 0 then
+		data.speedX = data.speedX-0.2
+		if data.speedX < 0 then data.speedX = 0 end
+	elseif data.speedX < 0 then
+		data.speedX = data.speedX+0.2
+		if data.speedX > 0 then data.speedX = 0 end
 	end
 	if tablelength(Player.getIntersecting(v.x,v.y-1,v.x+data.width,v.y+data.height)) > 0 and player.speedY >= 0 then
-		v.speedX = v.speedX+0.4
+		data.speedX = data.speedX+0.4
 		if player.speedY > 0 then player.speedY = 0 end
 		player.y = player.y+1
-		if v.speedX > 3 then v.speedX = 3 end
-		if v.speedX < -3 then v.speedX = -3 end
-		AnimOffset = AnimOffset+(0.1*v.speedX)
+		if data.speedX > 3 then data.speedX = 3 end
+		if data.speedX < -3 then data.speedX = -3 end
+		AnimOffset = AnimOffset+(0.1*data.speedX)
 		if AnimOffset > 3.4 then AnimOffset = 0 end
 	end
 	if tablelength(Player.getIntersecting(v.x,v.y-1,v.x+data.width,v.y+data.height)) > 0 and player.speedY < 0 then
-		v.speedX = v.speedX-0.4
-		if v.speedX > 3 then v.speedX = 3 end
-		if v.speedX < -3 then v.speedX = -3 end
-		AnimOffset = AnimOffset+(0.1*v.speedX)
+		data.speedX = data.speedX-0.4
+		if data.speedX > 3 then data.speedX = 3 end
+		if data.speedX < -3 then data.speedX = -3 end
+		AnimOffset = AnimOffset+(0.1*data.speedX)
 		if AnimOffset > 3.4 then AnimOffset = 0 end
 	end
 	if AnimOffset < 0 then AnimOffset = 3.4 end
-	if v.speedX > 3 then v.speedX = 3 end
-	if v.speedX < -3 then v.speedX = -3 end
+	if data.speedX > 3 then data.speedX = 3 end
+	if data.speedX < -3 then data.speedX = -3 end
+	v.speedX = data.speedX
 end
 function tablelength(T)
   local count = 0

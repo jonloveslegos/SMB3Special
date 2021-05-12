@@ -2,8 +2,8 @@ HEAD
 TL:"4-4";CPID:"SMBX2";
 HEAD_END
 SECTION
-SC:0;L:-200000;R:-195904;T:-200600;B:-199680;MZ:47;MF:"";BG:13;
-SC:1;L:-180000;R:-178976;T:-180600;B:-180000;MZ:47;MF:"";BG:13;
+SC:0;L:-200000;R:-195904;T:-200600;B:-199680;MZ:47;MF:"";BG:13;XTRA:"{\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
+SC:1;L:-180000;R:-178976;T:-180600;B:-180000;MZ:47;MF:"";BG:13;XTRA:"{\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
 SC:2;L:-160000;R:-158976;T:-160600;B:-160000;MZ:1;MF:"";BG:1;
 SECTION_END
 STARTPOINT
