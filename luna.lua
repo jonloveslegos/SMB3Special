@@ -1303,7 +1303,12 @@ function onEvent(eventName)
         end
         if starCoinTotal >= 3*(8+9+12) and SaveData.bonusCount < 3 then
             inventory.addPowerUp(2, 3)
-            Text.showMessageBox("You got 3 Raccoon Leafs!")
+            Text.showMessageBox("You got 3 Super Leafs!")
+            SaveData.bonusCount = SaveData.bonusCount+1
+        end
+        if starCoinTotal >= 3*(8+9+12+9) and SaveData.bonusCount < 4 then
+            inventory.addPowerUp(3, 3)
+            Text.showMessageBox("You got 3 Tanooki Suits!")
             SaveData.bonusCount = SaveData.bonusCount+1
         end
     end
