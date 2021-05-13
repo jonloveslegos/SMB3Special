@@ -36,7 +36,7 @@ local burnerBottomSettings = {
 
 	fireID = 750,
 	fireDirection = 1,
-	cooldown = 256,
+	cooldown = 120,
 }
 
 local configFile = npcManager.setNpcSettings(burnerBottomSettings)
