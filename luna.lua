@@ -1358,6 +1358,15 @@ function onNPCKill(eventToken,killedNPC,harmtype)
     if killedNPC.id == 800 and harmtype == HARM_TYPE_JUMP then
         NPC.spawn(799,killedNPC.x,killedNPC.y)
     end
+    if killedNPC.id == 722 then
+        if killedNPC.target ~= nil then
+            if killedNPC.target.isValid == true then
+                local killed = NPC.spawn(722,killedNPC.x,killedNPC.y)
+                killed.target = killedNPC.target
+                killed.offset = killedNPC.offset
+            end
+        end
+    end
     if killedNPC.id == 47 then
         NPC.spawn(47,killedNPC.x-(camera.width-64),killedNPC.y)
     end
