@@ -10,6 +10,15 @@ local starCoinTotal = SaveData._basegame.starcoinCounter
 local map = require("map")
 local sec0 = Section(0)
 local raiseWater = false
+local respawningNPC = -1
+local respawningNPCTimer = 0
+local respawningNPCy = 0
+local npcTimerBase = 240
+local usePBar = true;
+local pbarCount = 0;
+local reduceTimer = 6;
+local speedTimer = 0
+local lastpowerup = 0;
 local Block1X = -1
 local Block2X = -1
 local delayedHitCount = 0
@@ -68,6 +77,7 @@ local teleToSecret = false
 local isPswitch = false
 local downTimer = 300
 local playerHit = false
+local startedFlight = false
 local uibox = Graphics.loadImage(Misc.resolveFile("smb3overhaul/back.png"))
 function tableContains(table, element)
   for _, value in pairs(table) do
@@ -89,7 +99,6 @@ if not SaveData.stamps[levelEnterfilename] then
 end
 function onStart()
     Timer.activate(300)
-    Defines.player_runspeed	= 7
     starcoin = require("npcs/ai/starcoin")
     StarCoinCount = tablelength(NPC.get(310))
     --[[for i=0, Section.count()-1 do
@@ -132,34 +141,20 @@ function onLoadSection(playerIdx)
         npcc:transform(989)
     end
     if player == nil then return end
-    local npcs = NPC.get(993)
+    local npcs = Block.get(987)
     if tablelength(npcs) > 0 then
         for i=1,tablelength(npcs) do
             if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
-                if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
-                    raiseWater = true
-                    break
-                else
-                    raiseWater = false
-                end
-            end
-        end
-    else
-        local npcs = Block.get(987)
-        if tablelength(npcs) > 0 then
-            for i=1,tablelength(npcs) do
-                if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
                     if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
                         raiseWater = true
                         break
                     else
                         raiseWater = false
                     end
-                end
             end
-        else
-            raiseWater = false
         end
+    else
+        raiseWater = false
     end
     local npcs = NPC.get(75)
     if tablelength(npcs) > 0 then
@@ -422,7 +417,11 @@ function onTickEnd()
     end
 end
 function onPostNPCKill(killedNPC,harmType)
-    if killedNPC.id == 993 then NPC.spawn(993,player.x-500-killedNPC.width+1,killedNPC.y) end
+    if killedNPC.id == 993 then 
+        respawningNPC = 993
+        respawningNPCy = killedNPC.y
+        respawningNPCTimer = npcTimerBase
+    end
 end
 function onCameraUpdate(camIdx)
     if tablelength(Block.get(988)) > 0 then
@@ -438,11 +437,65 @@ function onCameraUpdate(camIdx)
             end
         end
     end
+    if raiseWater == true then
+        camOffset = camOffset-waterMove
+        camera.y = Section(player.section).boundary.bottom+camOffset-camera.height
+        Section(player.section).boundary.top = Section(player.section).boundary.top-waterMove
+        Section(player.section).boundary.bottom = Section(player.section).boundary.bottom-waterMove
+    end
 end
 function onTick()
     if player == nil then 
         return 
     end
+    if respawningNPCTimer > 0 and respawningNPC > 0 then
+        respawningNPCTimer = respawningNPCTimer-1
+    end
+    if respawningNPCTimer <= 0 and respawningNPC > 0 then
+        local spawnedd = NPC.spawn(993,camera.bounds.left,respawningNPCy)
+        respawningNPC = -1
+        respawningNPCTimer = -1
+        respawningNPCy = -1
+        spawnedd.x = spawnedd.x-128
+    end
+    local isFlying = player:mem(0x16E, FIELD_WORD);
+    local mx = 35
+    local pl = player
+    if pl.character == CHARACTER_MARIO then mx = 35 
+    elseif pl.character == CHARACTER_LINK then mx = 10 
+    elseif pl.character == CHARACTER_LUIGI then mx = 40 
+    elseif pl.character == CHARACTER_TOAD then mx = 60
+    elseif pl.character == CHARACTER_PEACH then mx = 80 
+    elseif pl.character == CHARACTER_WARIO then mx = 35 
+    elseif pl.character == CHARACTER_KLONOA then mx = 60 
+    elseif pl.character == CHARACTER_NINJABOMBERMAN then mx = 80 
+    elseif pl.character == CHARACTER_ROSALINA then mx = 80 
+    elseif pl.character == CHARACTER_SNAKE then mx = 10 
+    elseif pl.character == CHARACTER_ZELDA then mx = 40 
+    elseif pl.character == CHARACTER_ULTIMATERINKA then mx = 60
+    else mx = -1 end
+    local speed = player.speedX
+    if((speed >= 6 or speed <= -6) and (isFlying ~= -1)) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
+            player:mem(0x168,FIELD_FLOAT,mx+20)
+            player:mem(0x16C,FIELD_BOOL,true)
+            player:mem(0x170,FIELD_WORD,180)
+            player:mem(0x16E,FIELD_BOOL,true)
+    elseif isFlying ~= -1 then
+        player:mem(0x168,FIELD_FLOAT,0)
+        player:mem(0x16C,FIELD_BOOL,false)
+        player:mem(0x16E,FIELD_BOOL,false)
+        if startedFlight == true and player:isGroundTouching() == true then
+            pbarCount = 0
+            if pwingsndp ~= nil then
+                pwingsndp:stop()
+                pwingsndp = nil
+            end
+            startedFlight = false
+        end
+    elseif isFlying == -1 then
+            startedFlight = true
+    end
+    if player:mem(0x170,FIELD_WORD) > 180 then player:mem(0x170,FIELD_WORD,180) end
     if isPswitch == true then
         local npcs = NPC.get(995)
         if tablelength(npcs) > 0 then
@@ -659,6 +712,9 @@ function onTick()
             if Section.getIdxFromCoords(bg[i].x, bg[i].y, 32, 32) == player.section then
                 bg[i].y = bg[i].y - waterMove
             end
+        end
+        if respawningNPC == 993 then
+            respawningNPCy = respawningNPCy-waterMove
         end
         
     end
@@ -879,6 +935,100 @@ function onHUDDraw(cameraID)
     Text.print(string.format("%03d",timeLeft), 1, 528-offSet, 544-(600-camera.height));--]]
     --Text.print(playerHit,1,400,500)
     --Text.print(speed, 1, 528-offSet, 544-(600-camera.height))
+    local isFlying = player:mem(0x16E, FIELD_WORD);
+    local speed = player.speedX;
+    if(reduceTimer <= 0) then
+      reduceTimer = 0;
+    end
+    if(player.runKeyPressing == true) or (player.altRunKeyPressing == true) then
+      if(pbarCount >= 10) or (isFlying == -1) then
+        Graphics.draw{
+          type = RTYPE_IMAGE,
+          image = powerbararrow,
+          x = 304-offSet,
+          y = 584-(600-camera.height),
+          priority = renderPriority,
+          sourceX = 0,
+          sourceY = 0,
+          sourceWidth = 14,
+          sourceHeight = 16,
+        }
+        reduceTimer = reduceTimer - 1;   
+      end
+
+      if(pbarCount >= 15) or (isFlying == -1) then
+        Graphics.draw{
+            type = RTYPE_IMAGE,
+            image = powerbararrow,
+            x = 320-offSet,
+            y = 584-(600-camera.height),
+            priority = renderPriority,
+            sourceX = 0,
+            sourceY = 0,
+            sourceWidth = 14,
+            sourceHeight = 16,
+        }
+        reduceTimer = reduceTimer - 1;
+      end
+
+      if(pbarCount >= 20) or (isFlying == -1) then
+        Graphics.draw{
+            type = RTYPE_IMAGE,
+            image = powerbararrow,
+            x = 336-offSet,
+            y = 584-(600-camera.height),
+            priority = renderPriority,
+            sourceX = 0,
+            sourceY = 0,
+            sourceWidth = 14,
+            sourceHeight = 16,
+        }
+        reduceTimer = reduceTimer - 1;
+      end
+
+      if(pbarCount >= 25) or (isFlying == -1) then
+        Graphics.draw{
+            type = RTYPE_IMAGE,
+            image = powerbararrow,
+            x = 352-offSet,
+            y = 584-(600-camera.height),
+            priority = renderPriority,
+            sourceX = 0,
+            sourceY = 0,
+            sourceWidth = 14,
+            sourceHeight = 16,
+        }
+        reduceTimer = reduceTimer - 1;  
+      end
+
+      if(pbarCount >= 30) or (isFlying == -1) then
+        Graphics.draw{
+            type = RTYPE_IMAGE,
+            image = powerbararrow,
+            x = 368-offSet,
+            y = 584-(600-camera.height),
+            priority = renderPriority,
+            sourceX = 0,
+            sourceY = 0,
+            sourceWidth = 14,
+            sourceHeight = 16,
+        }
+        reduceTimer = reduceTimer - 1;
+      end
+     if(pbarCount >= 35) or (isFlying == -1) then
+      Graphics.draw{
+            type = RTYPE_IMAGE,
+            image = powerbararrow,
+            x = 384-offSet,
+            y = 584-(600-camera.height),
+            priority = renderPriority,
+            sourceX = 0,
+            sourceY = 0,
+            sourceWidth = 14,
+            sourceHeight = 16,
+      }
+      reduceTimer = reduceTimer - 1;
+    end 
     local mx = 35
     if pl.character == CHARACTER_MARIO then mx = 35 
     elseif pl.character == CHARACTER_LINK then mx = 10 
@@ -893,6 +1043,59 @@ function onHUDDraw(cameraID)
     elseif pl.character == CHARACTER_ZELDA then mx = 40 
     elseif pl.character == CHARACTER_ULTIMATERINKA then mx = 60
     else mx = -1 end
+    if((speed >= 6 or speed <= -6) or (isFlying == -1) ) then
+            if player:isGroundTouching() == true then
+			    pbarCount = pbarCount + 2.5;
+            elseif (isFlying ~= -1) then
+                Defines.player_runspeed	= 6
+			    pbarCount = pbarCount - 0.5;
+                
+            end
+			if(pbarCount >= 40) then
+				pbarCount = 40;
+                Defines.player_runspeed	= 7
+                if speed >= 6 then speed = 7 elseif speed <= -6 then speed = -7 end
+			    if pwingsndp == nil then
+		            pwingsndp = SFX.play(pwingsnd)
+                end
+			    Graphics.draw{
+                            type = RTYPE_IMAGE,
+                            image = powerbaricon,
+                            x = 402-offSet,
+                            y = 584-(600-camera.height),
+                            priority = renderPriority,
+                            sourceX = 0,
+                            sourceY = 0,
+                            sourceWidth = 30,
+                            sourceHeight = 16,
+                }
+			else
+                if pwingsndp ~= nil then
+                    pwingsndp:stop()
+                    pwingsndp = nil
+                end
+            end
+		else
+            Defines.player_runspeed	= 6
+			pbarCount = pbarCount - 0.5;
+            if pwingsndp ~= nil then
+                pwingsndp:stop()
+                pwingsndp = nil
+            end
+		end
+
+		if(pbarCount <= 0) then
+			pbarCount = 0;
+		end
+    else
+        Defines.player_runspeed	= 6
+		pbarCount = 0;
+        if pwingsndp ~= nil then
+                pwingsndp:stop()
+                pwingsndp = nil
+        end
+    end
+    --[[
     if((canFly == true) or (isFlying == true)) and mx >= 0 then
         speedTime = mx
         if pwingsndp == nil then
@@ -1002,7 +1205,7 @@ function onHUDDraw(cameraID)
             sourceHeight = 16,
         }
         reduceTimer = reduceTimer - 1;
-    end 
+    end
 
     if(speed >= 6) or (speed <= -6) or (isFlying == false) then
 
@@ -1013,7 +1216,7 @@ function onHUDDraw(cameraID)
 		
 	else
 		pbarCount = pbarCount - 1;
-	end
+	end]]
     if gotStamp == true then
         Graphics.draw{
             type = RTYPE_IMAGE,
@@ -1368,7 +1571,9 @@ function onNPCKill(eventToken,killedNPC,harmtype)
         end
     end
     if killedNPC.id == 47 then
-        NPC.spawn(47,killedNPC.x-(camera.width-64),killedNPC.y)
+        respawningNPC = 47
+        respawningNPCy = killedNPC.y
+        respawningNPCTimer = npcTimerBase
     end
     if killedNPC.id == 990 and gotStamp == false and harmtype == HARM_TYPE_VANISH and tablelength(Player.getIntersecting(killedNPC.x,killedNPC.y,killedNPC.x+killedNPC.width,killedNPC.y+killedNPC.height)) > 0 then
         gotStamp = true

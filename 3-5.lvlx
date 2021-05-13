@@ -2,7 +2,7 @@ HEAD
 TL:"3-5";CPID:"SMBX2";
 HEAD_END
 SECTION
-SC:0;L:-200000;R:-195904;T:-200736;B:-199872;MZ:47;MF:"";BG:22;XTRA:"{\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
+SC:0;L:-200000;R:-195904;T:-200736;B:-199872;MZ:47;MF:"";BG:56;XTRA:"{\n    \"effects\"\: {\n        \"screenEffects\"\: 1\n    }\n}\n";
 SC:1;L:-180000;R:-179200;T:-180608;B:-179744;MZ:4;MF:"";BG:6;
 SC:2;L:-160000;R:-158464;T:-160600;B:-160000;MZ:1;MF:"";BG:1;
 SECTION_END
