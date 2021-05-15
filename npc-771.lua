@@ -39,9 +39,9 @@ local fireNipperSettings = {
 	grabtop=false,
 
 	--NPC-specific properties
-	--projectileID = 752, --Projectile NPC ID, default being npcID+1. Uncomment and set this manually otherwise
+	projectileID = 772, --Projectile NPC ID, default being npcID+1. Uncomment and set this manually otherwise
 	
-	--deathEffectID = 751, --Death Effect ID, default being npcID. Uncomment and set this manually otherwise
+	deathEffectID = 771, --Death Effect ID, default being npcID. Uncomment and set this manually otherwise
 }
 
 local deathEffectID = fireNipperSettings["deathEffectID"] or npcID

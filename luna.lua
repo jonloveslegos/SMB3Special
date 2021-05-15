@@ -968,7 +968,7 @@ function onHUDDraw(cameraID)
     Text.print(levelname,109-offSet, 523-(600-camera.height));
     Text.print(string.format("%03d",timeLeft), 1, 528-offSet, 544-(600-camera.height));--]]
     --Text.print(playerHit,1,400,500)
-    Text.print(player:mem(0x38,FIELD_WORD), 1, 528-offSet, 544-(600-camera.height))
+    --Text.print(player:mem(0x38,FIELD_WORD), 1, 528-offSet, 544-(600-camera.height))
     local isFlying = player:mem(0x16E, FIELD_WORD);
     local speed = player.speedX;
     if(reduceTimer <= 0) then

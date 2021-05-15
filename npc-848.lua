@@ -20,7 +20,7 @@ local GreenSpringboardSettings = {
 	playerblocktop = true,
 	nohurt=true,
 	nogravity = true,
-	noblockcollision = false,
+	noblockcollision = true,
 	nofireball = false,
 	noiceball = false,
 	noyoshi= false,
@@ -72,12 +72,12 @@ function GreenSpringboard.onTickNPC(v)
 	end
 	if v.data.bounced == false and Colliders.speedCollide(player,v) and player.speedX > 1 and player.x <= v.x - (player.width/2) and player.y+player.height-2 >= v.y then
 		v.data.bounced = true
-		player.speedX = -1.2
+		player.speedX = -3
 		SFX.play(SFX.open("block-hit.ogg"))
 	end
 	if v.data.reverseBounced == false and Colliders.speedCollide(player,v) and player.speedX < -1 and player.x >= v.x and player.y+player.height-2 >= v.y then
 		v.data.reverseBounced = true
-		player.speedX = 1.2
+		player.speedX = 3
 		SFX.play(SFX.open("block-hit.ogg"))
 	end
 	if v.data.bounced then
