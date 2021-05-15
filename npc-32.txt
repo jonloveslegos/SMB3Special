@@ -1,4 +1,4 @@
-npcblock=0
+npcblock=1
 grabside=0
 noyoshi=1
-playerblock=0
+playerblock=1

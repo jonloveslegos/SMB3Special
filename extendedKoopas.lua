@@ -255,7 +255,7 @@ do
         end
 
 
-        if v:mem(0x12C,FIELD_WORD) > 0 and (config.grabtop or config.grabside) and config.shellID > 0 then -- smb2 koopa picked up
+        if v:mem(0x12C,FIELD_WORD) > 0 and (config.grabtop or config.grabside) and config.shellID > 0 and config.jumphurt == false then -- smb2 koopa picked up
             turnIntoShell(v)
 
             dropCoin(v,data,config, Player(v:mem(0x12C,FIELD_WORD)))
@@ -264,7 +264,7 @@ do
         end
 
 
-        if v:mem(0x138,FIELD_WORD) == 5 and config.shellID > 0 then
+        if v:mem(0x138,FIELD_WORD) == 5 and config.shellID > 0 and config.jumphurt == false then
             turnIntoShell(v)
             return
         end
@@ -343,7 +343,7 @@ do
         local config = NPC.config[v.id]
         local data = v.data
 
-        if reason == HARM_TYPE_JUMP then
+        if reason == HARM_TYPE_JUMP and config.jumphurt == false  then
             if config.nonWingedKoopaID > 0 then
                 v:transform(config.nonWingedKoopaID)
                 v.speedY = 0
@@ -382,7 +382,7 @@ do
             
 
             SFX.play(2)
-        elseif reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0) then
+        elseif (reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0)) and config.jumphurt == false  then
             if config.shellID > 0 then
                 turnIntoShell(v)
                 if reason == HARM_TYPE_FROMBELOW then
@@ -402,6 +402,7 @@ do
         elseif reason == HARM_TYPE_SPINJUMP and (config.isflying and config.spinjumpsafe) then -- isflying is hardcoded to always let spin jumps work! for some reason!
             eventObj.cancelled = true      
         end
+        if config.jumphurt == true then eventObj.cancelled = true   end
     end
 end
 

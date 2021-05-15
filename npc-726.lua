@@ -38,7 +38,7 @@ local burnerRightSettings = {
 	fireDirection = 1,
 	cooldown = 120,
 	fire_xOffset = 0,
-	fire_yOffset = 0
+	fire_yOffset = 14
 }
 
 local configFile = npcManager.setNpcSettings(burnerRightSettings)
@@ -110,7 +110,7 @@ function burnerRight.onTickNPC(v)
 	elseif data.state == 1 then
 		if data.timer == 1 then
 			SFX.play(42)
-			data.flame = NPC.spawn(configFile.fireID, v.x + NPC.config[v.id].width, v.y + 2, v:mem(0x146, FIELD_WORD))
+			data.flame = NPC.spawn(configFile.fireID, v.x + NPC.config[v.id].width + NPC.config[v.id].fire_xOffset, v.y + NPC.config[v.id].fire_yOffset, v:mem(0x146, FIELD_WORD))
 			
 			data.flame.direction = configFile.fireDirection
 			data.flame.layerName = "Spawned NPCs"

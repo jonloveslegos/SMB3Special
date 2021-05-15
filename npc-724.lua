@@ -60,35 +60,34 @@ function burnerLeft.onTickNPC(v)
 	if Defines.levelFreeze then return end
 	
 	local data = v.data
+	data.pushSpeed = data.pushSpeed or 0
 	data.width = data.width or NPC.config[v.id].gfxwidth
 	data.height = data.height or NPC.config[v.id].gfxheight
 	data.speedX = data.speedX or v.speedX
 	if data.speedX > 0 then
-		data.speedX = data.speedX-0.05
+		data.speedX = data.speedX-0.2
 		if data.speedX < 0 then data.speedX = 0 end
 	elseif data.speedX < 0 then
-		data.speedX = data.speedX+0.05
+		data.speedX = data.speedX+0.2
 		if data.speedX > 0 then data.speedX = 0 end
 	end
-	if tablelength(Player.getIntersecting(v.x,v.y-1,v.x+data.width,v.y+data.height)) > 0 and player.speedY >= 0 then
-		data.speedX = data.speedX+0.1
+	if tablelength(Player.getIntersecting(v.x,v.y-5,v.x+data.width,v.y)) > 0 and player.speedY >= 0 then
+		data.speedX = data.speedX+0.4
+		player.y = player.y-player.speedY
 		if player.speedY > 0 then player.speedY = 0 end
-		player.y = player.y+1
-		if data.speedX > 2 then data.speedX = 2 end
-		if data.speedX < -2 then data.speedX = -2 end
-		AnimOffset = AnimOffset+(0.1*data.speedX)
+		player.y = player.y+data.pushSpeed
+		data.pushSpeed = data.pushSpeed+Defines.player_grav
+		if data.speedX > 3 then data.speedX = 3 end
+		if data.speedX < -3 then data.speedX = -3 end
+		AnimOffset = AnimOffset+(0.2*data.speedX)
 		if AnimOffset > 3.4 then AnimOffset = 0 end
-	end
-	if tablelength(Player.getIntersecting(v.x,v.y-1,v.x+data.width,v.y+data.height)) > 0 and player.speedY < 0 then
-		data.speedX = data.speedX-0.1
-		if data.speedX > 2 then data.speedX = 2 end
-		if data.speedX < -2 then data.speedX = -2 end
-		AnimOffset = AnimOffset+(0.1*data.speedX)
-		if AnimOffset > 3.4 then AnimOffset = 0 end
+	else
+		data.pushSpeed = player.speedY
 	end
 	if AnimOffset < 0 then AnimOffset = 3.4 end
-	if data.speedX > 2 then data.speedX = 2 end
-	if data.speedX < -2 then data.speedX = -2 end
+	if data.speedX > 3 then data.speedX = 3 end
+	if data.speedX < -3 then data.speedX = -3 end
+	if data.pushSpeed < -Defines.gravity then data.pushSpeed = -Defines.gravity end
 	v.speedX = data.speedX
 end
 function tablelength(T)

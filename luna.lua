@@ -13,6 +13,7 @@ local raiseWater = false
 local respawningNPC = -1
 local respawningNPCTimer = 0
 local respawningNPCy = 0
+local respawningNPCx = nil
 local npcTimerBase = 240
 local usePBar = true;
 local pbarCount = 0;
@@ -162,7 +163,7 @@ function onLoadSection(playerIdx)
             if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
                 if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
                     Text.showMessageBox(npcs[i].msg)
-                    if tablelength(Block.get(749)) > 0 then 
+                    if tablelength(Block.get(757)) > 0 then 
                         randomizeBoxes = true
                         randomizeBoxesCount = 5
                     end
@@ -176,7 +177,7 @@ function onLoadSection(playerIdx)
             if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) > -1 then
                 if Section.getIdxFromCoords(npcs[i].x, npcs[i].y, 32, 32) == player.section then
                     Text.showMessageBox(npcs[i].msg)
-                    if tablelength(Block.get(749)) > 0 then 
+                    if tablelength(Block.get(757)) > 0 then 
                         randomizeBoxes = true
                         randomizeBoxesCount = 5
                     end
@@ -420,6 +421,13 @@ function onPostNPCKill(killedNPC,harmType)
     if killedNPC.id == 993 then 
         respawningNPC = 993
         respawningNPCy = killedNPC.y
+        respawningNPCx = nil
+        respawningNPCTimer = npcTimerBase
+    end
+    if killedNPC.id == 395 then 
+        respawningNPC = 395
+        respawningNPCy = killedNPC.y
+        respawningNPCx = killedNPC.x
         respawningNPCTimer = npcTimerBase
     end
 end
@@ -444,6 +452,9 @@ function onCameraUpdate(camIdx)
         Section(player.section).boundary.bottom = Section(player.section).boundary.bottom-waterMove
     end
 end
+function onInputUpdate()
+    player:mem(0x38,FIELD_WORD,0)
+end
 function onTick()
     if player == nil then 
         return 
@@ -452,11 +463,19 @@ function onTick()
         respawningNPCTimer = respawningNPCTimer-1
     end
     if respawningNPCTimer <= 0 and respawningNPC > 0 then
-        local spawnedd = NPC.spawn(993,camera.bounds.left,respawningNPCy)
+        local spawnedd = 0
+        if respawningNPCx == nil then
+            spawnedd = NPC.spawn(respawningNPC,camera.bounds.left,respawningNPCy)
+        else
+            spawnedd = NPC.spawn(respawningNPC,respawningNPCx,respawningNPCy)
+        end
         respawningNPC = -1
         respawningNPCTimer = -1
         respawningNPCy = -1
-        spawnedd.x = spawnedd.x-128
+        if respawningNPCx == nil then
+            spawnedd.x = spawnedd.x-128
+        end
+        respawningNPCx = nil
     end
     local isFlying = player:mem(0x16E, FIELD_WORD);
     local mx = 35
@@ -475,26 +494,32 @@ function onTick()
     elseif pl.character == CHARACTER_ULTIMATERINKA then mx = 60
     else mx = -1 end
     local speed = player.speedX
-    if((speed >= 6 or speed <= -6) and (isFlying ~= -1)) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
-            player:mem(0x168,FIELD_FLOAT,mx+20)
-            player:mem(0x16C,FIELD_BOOL,true)
-            player:mem(0x170,FIELD_WORD,180)
-            player:mem(0x16E,FIELD_BOOL,true)
-    elseif isFlying ~= -1 then
-        player:mem(0x168,FIELD_FLOAT,0)
-        player:mem(0x16C,FIELD_BOOL,false)
-        player:mem(0x16E,FIELD_BOOL,false)
-        if startedFlight == true and player:isGroundTouching() == true then
-            pbarCount = 0
-            if pwingsndp ~= nil then
-                pwingsndp:stop()
-                pwingsndp = nil
+    if (player.powerup == 4 or player.powerup == 5) and player.mount == 0 then
+        if((speed >= 3 or speed <= -3) and (isFlying ~= -1)) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
+                player:mem(0x168,FIELD_FLOAT,mx+20)
+                player:mem(0x16C,FIELD_BOOL,true)
+                player:mem(0x170,FIELD_WORD,180)
+                player:mem(0x16E,FIELD_BOOL,true)
+        elseif isFlying ~= -1 then
+            player:mem(0x168,FIELD_FLOAT,0)
+            player:mem(0x16C,FIELD_BOOL,false)
+            player:mem(0x16E,FIELD_BOOL,false)
+            if startedFlight == true and player:isGroundTouching() == true then
+                if pwingsndp ~= nil then
+                    pwingsndp:stop()
+                    pwingsndp = nil
+                end
+                startedFlight = false
             end
-            startedFlight = false
+        elseif isFlying == -1 then
+                startedFlight = true
         end
-    elseif isFlying == -1 then
-            startedFlight = true
     end
+    if SaveData.usePWing then
+		player:mem(0x168, FIELD_FLOAT, 40)
+		player:mem(0x170, FIELD_WORD, 100)
+        pbarCount = 40
+	end
     if player:mem(0x170,FIELD_WORD) > 180 then player:mem(0x170,FIELD_WORD,180) end
     if isPswitch == true then
         local npcs = NPC.get(995)
@@ -523,14 +548,14 @@ function onTick()
     end
     if randomizeBoxes == true and randomizeBoxesCount > 0 then
         if randomizeBoxesStep == 1 then
-            random1 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
-            random2 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            random1 = Block.get(757)[RNG.randomInt(1,tablelength(Block.get(757)))]
+            random2 = Block.get(757)[RNG.randomInt(1,tablelength(Block.get(757)))]
             while random2==random1 do
-                random2 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+                random2 = Block.get(757)[RNG.randomInt(1,tablelength(Block.get(757)))]
             end
-            random3 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+            random3 = Block.get(757)[RNG.randomInt(1,tablelength(Block.get(757)))]
             while random3==random1 or random3==random2 do
-                random3 = Block.get(749)[RNG.randomInt(1,tablelength(Block.get(749)))]
+                random3 = Block.get(757)[RNG.randomInt(1,tablelength(Block.get(757)))]
             end
             Block1X = random1.x
             Block2X = random2.x
@@ -584,6 +609,15 @@ function onTick()
                 player.speedX = 0
                 player.speedY = 0
                 player:teleport(Block.get(992)[1].x,Block.get(992)[1].y+Block.get(992)[1].height,true)
+            end
+        end
+    end
+    local bgos = BGO.get({172,66})
+    if tablelength(bgos) > 0 then
+        for i=1,tablelength(bgos) do
+            if tablelength(Player.getIntersecting(bgos[i].x,bgos[i].y,bgos[i].x+bgos[i].width,bgos[i].y+bgos[i].height)) > 0 then
+                player.speedY = player.speedY+(Defines.player_grav/4)
+                return
             end
         end
     end
@@ -657,12 +691,12 @@ function onTick()
     if tablelength(bumpBlocks) > 0 then
         for i=1,tablelength(bumpBlocks) do
             if  player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
-                Block.spawn(750,bumpBlocks[i].x,bumpBlocks[i].y)
+                Block.spawn(758,bumpBlocks[i].x,bumpBlocks[i].y)
                 bumpBlocks[i]:remove(false)
             end
         end
     end
-    local bumpBlocks = Block.get(749)
+    local bumpBlocks = Block.get(757)
     if tablelength(bumpBlocks) > 0 then
         for i=1,tablelength(bumpBlocks) do
             if  player.keys.up and bumpBlocks[i].isHidden == false and tablelength(Player.getIntersecting(bumpBlocks[i].x,bumpBlocks[i].y,bumpBlocks[i].x+bumpBlocks[i].width,bumpBlocks[i].y+bumpBlocks[i].height)) > 0 then
@@ -934,7 +968,7 @@ function onHUDDraw(cameraID)
     Text.print(levelname,109-offSet, 523-(600-camera.height));
     Text.print(string.format("%03d",timeLeft), 1, 528-offSet, 544-(600-camera.height));--]]
     --Text.print(playerHit,1,400,500)
-    --Text.print(speed, 1, 528-offSet, 544-(600-camera.height))
+    Text.print(player:mem(0x38,FIELD_WORD), 1, 528-offSet, 544-(600-camera.height))
     local isFlying = player:mem(0x16E, FIELD_WORD);
     local speed = player.speedX;
     if(reduceTimer <= 0) then
@@ -1043,15 +1077,28 @@ function onHUDDraw(cameraID)
     elseif pl.character == CHARACTER_ZELDA then mx = 40 
     elseif pl.character == CHARACTER_ULTIMATERINKA then mx = 60
     else mx = -1 end
-    if((speed >= 6 or speed <= -6) or (isFlying == -1) ) then
-            if player:isGroundTouching() == true then
-			    pbarCount = pbarCount + 2.5;
-            elseif (isFlying ~= -1) then
-                Defines.player_runspeed	= 6
-			    pbarCount = pbarCount - 0.5;
-                
+    if(((speed >= 3 or speed <= -3) and startedFlight == false and player.mount == 0) or (isFlying == -1) ) then
+            if startedFlight == false and player:isGroundTouching() then
+                if ((math.abs(speed) >= (3*(6/7))) or (isFlying == -1)) and pbarCount < 10 then
+			        pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (3.75*(6/7))) or (isFlying == -1)) and pbarCount < 15 then
+			            pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (4.25*(6/7))) or (isFlying == -1)) and pbarCount < 20 then
+			            pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (5*(6/7))) or (isFlying == -1)) and pbarCount < 25 then
+			            pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (5.75*(6/7))) or (isFlying == -1)) and pbarCount < 30 then
+			            pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (6.25*(6/7))) or (isFlying == -1)) and pbarCount < 35 then
+			            pbarCount = pbarCount+1;
+                elseif ((math.abs(speed) >= (7*(6/7))) or (isFlying == -1)) and pbarCount < 40 then
+			            pbarCount = pbarCount+1;
+                end
             end
-			if(pbarCount >= 40) then
+            if (isFlying ~= -1) then
+                Defines.player_runspeed	= 6
+            end
+			if(pbarCount >= 40) and ((speed >= 6 or speed <= -6) or (isFlying == -1) ) then
 				pbarCount = 40;
                 Defines.player_runspeed	= 7
                 if speed >= 6 then speed = 7 elseif speed <= -6 then speed = -7 end
@@ -1573,6 +1620,13 @@ function onNPCKill(eventToken,killedNPC,harmtype)
     if killedNPC.id == 47 then
         respawningNPC = 47
         respawningNPCy = killedNPC.y
+        respawningNPCx = nil
+        respawningNPCTimer = npcTimerBase
+    end
+    if killedNPC.id == 610 then
+        respawningNPC = 610
+        respawningNPCy = killedNPC.y
+        respawningNPCx = nil
         respawningNPCTimer = npcTimerBase
     end
     if killedNPC.id == 990 and gotStamp == false and harmtype == HARM_TYPE_VANISH and tablelength(Player.getIntersecting(killedNPC.x,killedNPC.y,killedNPC.x+killedNPC.width,killedNPC.y+killedNPC.height)) > 0 then
