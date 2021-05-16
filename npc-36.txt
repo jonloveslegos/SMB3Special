@@ -8,6 +8,7 @@ frames = 2
 framestyle = 1
 framespeed = 8
 jumphurt = true
+npcblock = false
 
 speed = 1.2
 cliffturn = false

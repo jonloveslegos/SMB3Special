@@ -6,6 +6,8 @@ goalcads = require("goalcards")
 local extendedKoopas = require("extendedKoopas")
 local inventory = require("customInventory")
 local camDir = true
+local pm = require("playermanager")
+local rng = require("rng")
 local starCoinTotal = SaveData._basegame.starcoinCounter
 local map = require("map")
 local sec0 = Section(0)
@@ -455,9 +457,41 @@ end
 function onInputUpdate()
     player:mem(0x38,FIELD_WORD,0)
 end
+function onDraw()
+    if SaveData.useSWing then player:render{x = x, y = y, ignorestate = false, sceneCoords = true, priority = 0, color = Color(0.5,0.5,1), mountcolor = Color.white, shader = shader} end
+end
 function onTick()
     if player == nil then 
         return 
+    end
+    if SaveData.useSWing and player:mem(0x36,FIELD_BOOL) == true then
+		if player.keys.run == KEYS_DOWN or player.keys.altRun == KEYS_DOWN then
+            if player.keys.up == KEYS_DOWN then
+                player.speedY = -12
+            elseif player.keys.down == KEYS_DOWN then
+                player.speedY = 12
+            end
+            if player.keys.left == KEYS_DOWN then
+                player.speedX = -90
+            elseif player.keys.right == KEYS_DOWN then
+                player.speedX = 90
+            else
+                player.speedX = 0
+            end
+        else
+            if player.keys.up == KEYS_DOWN then
+                player.speedY = -6
+            elseif player.keys.down == KEYS_DOWN then
+                player.speedY = 6
+            end
+            if player.keys.left == KEYS_DOWN then
+                player.speedX = -4
+            elseif player.keys.right == KEYS_DOWN then
+                player.speedX = 4
+            else
+                player.speedX = 0
+            end
+        end
     end
     if respawningNPCTimer > 0 and respawningNPC > 0 then
         respawningNPCTimer = respawningNPCTimer-1
@@ -498,7 +532,7 @@ function onTick()
         if((speed >= 3 or speed <= -3) and (isFlying ~= -1)) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
                 player:mem(0x168,FIELD_FLOAT,mx+20)
                 player:mem(0x16C,FIELD_BOOL,true)
-                player:mem(0x170,FIELD_WORD,180)
+                player:mem(0x170,FIELD_WORD,240)
                 player:mem(0x16E,FIELD_BOOL,true)
         elseif isFlying ~= -1 then
             player:mem(0x168,FIELD_FLOAT,0)
@@ -520,7 +554,7 @@ function onTick()
 		player:mem(0x170, FIELD_WORD, 100)
         pbarCount = 40
 	end
-    if player:mem(0x170,FIELD_WORD) > 180 then player:mem(0x170,FIELD_WORD,180) end
+    if player:mem(0x170,FIELD_WORD) > 240 then player:mem(0x170,FIELD_WORD,240) end
     if isPswitch == true then
         local npcs = NPC.get(995)
         if tablelength(npcs) > 0 then
@@ -974,7 +1008,7 @@ function onHUDDraw(cameraID)
     if(reduceTimer <= 0) then
       reduceTimer = 0;
     end
-    if(player.runKeyPressing == true) or (player.altRunKeyPressing == true) then
+    if((player.runKeyPressing == true) or (player.altRunKeyPressing == true)) and player:mem(0x36,FIELD_BOOL) == false then
       if(pbarCount >= 10) or (isFlying == -1) then
         Graphics.draw{
           type = RTYPE_IMAGE,
@@ -1427,6 +1461,17 @@ function onEvent(eventName)
         inventory.addPowerUp(7, 1)
         Text.showMessageBox("You got a P-Wing!")
     end
+    if eventName == "swing" then
+        if SaveData.levelEnterUnlocked == true then return end
+        local levelEntertitle = SaveData.LevelEntered
+        local tale = SaveData.levelPassInfo
+        if tale ~= nil then
+            tale[table.ifind(tale,SaveData.LevelEntered)+1] = true
+            SaveData.levelPassInfo = tale
+        end
+        inventory.addPowerUp(9, 1)
+        Text.showMessageBox("You got a S-Wing!")
+    end
     if eventName == "whistle" then
         if SaveData.levelEnterUnlocked == true then 
             Level.winState(LEVEL_END_STATE_SMB3ORB) 
@@ -1463,6 +1508,17 @@ function onEvent(eventName)
         end
         random = RNG.randomInt(0,2)
         if random == 0 then onEvent("mushroom") elseif random == 1 then onEvent("fireflower") elseif random == 2 then onEvent("leaf") end
+    end
+    if eventName == "random 1-3 frog" then
+        if SaveData.levelEnterUnlocked == true then return end
+        local levelEntertitle = SaveData.LevelEntered
+        local tale = SaveData.levelPassInfo
+        if tale ~= nil then
+            tale[table.ifind(tale,SaveData.LevelEntered)+1] = true
+            SaveData.levelPassInfo = tale
+        end
+        random = RNG.randomInt(0,2)
+        if random == 2 then onEvent("swing") elseif random == 0 then onEvent("fireflower") elseif random == 1 then onEvent("leaf") end
     end
     if eventName == "random 1-3 ver2" then
         if SaveData.levelEnterUnlocked == true then return end
@@ -1605,6 +1661,11 @@ function onNPCKill(eventToken,killedNPC,harmtype)
         end
         Misc.givePoints(SCORE_10,vector(killedNPC.x,killedNPC.y),false)
     end
+    if killedNPC.id == 987 then
+		SFX.play(6)
+		SaveData.useSWing = true
+		player.powerup = 2
+	end
     if killedNPC.id == 800 and harmtype == HARM_TYPE_JUMP then
         NPC.spawn(799,killedNPC.x,killedNPC.y)
     end

@@ -61,7 +61,7 @@ ID:222;X:-199424;Y:-200160;W:32;H:32;
 ID:217;X:-199424;Y:-200192;W:32;H:32;
 ID:217;X:-199424;Y:-200224;W:32;H:32;
 ID:217;X:-199424;Y:-200256;W:32;H:32;
-ID:751;X:-199616;Y:-200224;W:64;H:64;CN:-1;LR:"item box";ED:"starman";
+ID:751;X:-199616;Y:-200224;W:64;H:64;CN:-1;LR:"item box";ED:"swing";
 BLOCK_END
 BGO
 ID:60;X:-200000;Y:-200480;
@@ -119,6 +119,6 @@ ET:"Level - Start";LH:["end"];LS:["item box"];AS:0;AX:0;AY:0;
 ET:"P Switch - Start";AS:0;AX:0;AY:0;
 ET:"P Switch - End";AS:0;AX:0;AY:0;
 ET:"hide item boxes";LH:["item box"];LS:["end"];AS:0;AX:0;AY:0;
-ET:"starman";SD:12;TE:"EndLevel";AS:0;AX:0;AY:0;
+ET:"swing";SD:12;TE:"EndLevel";AS:0;AX:0;AY:0;
 ET:"EndLevel";AS:0;AX:0;AY:0;
 EVENTS_CLASSIC_END

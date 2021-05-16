@@ -1,0 +1,6 @@
+foreground=1
+speed=0
+noblockcollision=1
+noyoshi=1
+nogravity=1
+grid=16

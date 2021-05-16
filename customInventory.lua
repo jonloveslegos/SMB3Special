@@ -11,13 +11,15 @@ local inventory = {}
 -- Customizable Stuff --
 -- This defines with how many items do you want to start --
 inventory.startingItems = 0
-
+local rng = require("rng")
 local particles = require("particles")
 local hOverride = require("hudoverride")
 local shader = Misc.multiResolveFile("starman.frag", "shaders\\npc\\starman.frag")
 local playerManager = require("playerManager")
 -- Variables --
 local invIsOpen = false
+local sparkleTimer = 0
+local sparkleStartTimer = 45
 local chooseIsOpen = false
 local invBack =  Graphics.loadImageResolved("OverworldHUD/Back.png")
 local invIcons =  Graphics.loadImageResolved("OverworldHUD/InvIcons.png")
@@ -25,6 +27,7 @@ local invChoose =  Graphics.loadImageResolved("OverworldHUD/Choose.png")
 local invChar =  Graphics.loadImageResolved("OverworldHUD/characters.png")
 local selector = Graphics.loadImageResolved("OverworldHUD/Selector.png")
 local pIcon = Graphics.loadImageResolved("OverworldHUD/p.png")
+local sIcon = Graphics.loadImageResolved("OverworldHUD/s.png")
 local isSelected = 0
 local bScale = 0
 local cScale = 0
@@ -58,10 +61,10 @@ function tablelength(T)
   return count
 end
 -- The Data Saving --
--- The Item order is: Mushroom, FireFlower, Leaf, Tanooki, Hammer, IceFlower, Starman, PWing --
-if SaveData.inventoryTable == nil or tablelength(SaveData.inventoryTable) < 8 then
+-- The Item order is: Mushroom, FireFlower, Leaf, Tanooki, Hammer, IceFlower, Starman, PWing, Whistle, SWing --
+if SaveData.inventoryTable == nil or tablelength(SaveData.inventoryTable) < 10 then
 	SaveData.inventoryTable = {}
-	for i = 0, 8 do
+	for i = 0, 10 do
         SaveData.inventoryTable[i+1] = inventory.startingItems
     end
 end
@@ -86,7 +89,9 @@ end
 if not SaveData.usePWing then
 	SaveData.usePWing = false
 end
-
+if not SaveData.useSWing then
+	SaveData.useSWing = false
+end
 
 function inventory.onInitAPI()
 	registerEvent(inventory, "onStart")
@@ -174,13 +179,13 @@ function inventory.onDrawWorld()
 
 	-- Drawing the Item Icons --
 	if bScale >= 1 then
-		for i = 1, 9, 1 do
+		for i = 1, 10, 1 do
 			if selectedOffset == (i-1) then isSelected = 1 else isSelected = 0 end
-			textplus.print{text=string.format("%02d", SaveData.inventoryTable[i]), x=((i-1)*82+94)*0.9, y=452, font=font, plaintext=true}
+			textplus.print{text=string.format("%02d", SaveData.inventoryTable[i]), x=((i-1)*82+94)*0.8, y=452, font=font, plaintext=true}
 			Graphics.draw{
 				type = RTYPE_IMAGE,
 				image = invIcons,
-				x = ((i-1) * 82 + 94)*0.9,
+				x = ((i-1) * 82 + 94)*0.8,
 				y = 478,
 				sourceY = (i-1) * 36,
 				sourceHeight = 36,
@@ -237,6 +242,9 @@ function inventory.onDrawWorld()
 	if SaveData.usePWing then
 		Graphics.draw{type=RTYPE_IMAGE, image=pIcon, x=84, y=96, priority = 6.1}
 	end
+	if SaveData.useSWing then
+		Graphics.draw{type=RTYPE_IMAGE, image=sIcon, x=84, y=96, priority = 6.1}
+	end
 end
 
 
@@ -261,7 +269,7 @@ function inventory.onInputWorld()
 			if player.rawKeys.left == KEYS_PRESSED and selectedOffset > 0 then
 				selectedOffset = selectedOffset - 1
 				SFX.play(29)
-			elseif player.rawKeys.right == KEYS_PRESSED and selectedOffset < 8 then
+			elseif player.rawKeys.right == KEYS_PRESSED and selectedOffset < 9 then
 				selectedOffset = selectedOffset + 1
 				SFX.play(29)
 			end
@@ -303,6 +311,10 @@ function inventory.onInputWorld()
 						ps = PlayerSettings.get(playerManager.getBaseID(player.character), selectedOffset + 2)
 						player.height = ps.hitboxHeight
 						SFX.play(6)
+						if SaveData.usePWing == true and selectedOffset + 2 ~= 4 then
+							SaveData.inventoryTable[8] = SaveData.inventoryTable[8] + 1
+							SaveData.usePWing = false
+						end
 						SaveData.inventoryTable[selectedOffset+1] = SaveData.inventoryTable[selectedOffset+1] - 1
 					end
 				elseif selectedOffset == 6 and not SaveData.useStarman then
@@ -311,6 +323,10 @@ function inventory.onInputWorld()
 					SaveData.inventoryTable[7] = SaveData.inventoryTable[7] - 1
 				elseif selectedOffset == 7 and not SaveData.usePWing then
 					SaveData.usePWing = true
+					if SaveData.useSWing == true then
+						SaveData.inventoryTable[10] = SaveData.inventoryTable[10] + 1
+						SaveData.useSWing = false
+					end
 					player.powerup = 4
 					ps = PlayerSettings.get(playerManager.getBaseID(player.character), 4)
 					player.height = ps.hitboxHeight
@@ -337,7 +353,24 @@ function inventory.onInputWorld()
 						world.playerX = 64
 						world.playerY = -1760
 					end
+				elseif selectedOffset == 9 and not SaveData.useSWing then
+					SaveData.useSWing = true
+					if SaveData.usePWing == true then
+						SaveData.inventoryTable[8] = SaveData.inventoryTable[8] + 1
+						SaveData.usePWing = false
+					end
+					player.powerup = 2
+					ps = PlayerSettings.get(playerManager.getBaseID(player.character), 4)
+					player.height = ps.hitboxHeight
+
+					if player2 then
+						player2.powerup = 2
+						ps = PlayerSettings.get(playerManager.getBaseID(player.character), 4)
+						player2.height = ps.hitboxHeight
+					end
 					
+					SFX.play(6)
+					SaveData.inventoryTable[10] = SaveData.inventoryTable[10] - 1
 				end
 				SaveData.power = player.powerup
 			else
@@ -353,7 +386,37 @@ function inventory.onTick()
 		player:mem(0x168, FIELD_FLOAT, 40)
 		player:mem(0x170, FIELD_WORD, 100)
 	end
-
+	if SaveData.useSWing then
+		if sparkleTimer <= 0 then
+			local effect = Animation.spawn(761, player.x, player.y)
+			effect.speedY = rng.randomInt(-60 / 20, 60 / 20)
+			effect.speedX = rng.randomInt(-60 / 20, 60 / 20)
+			sparkleTimer = sparkleStartTimer
+		else
+			sparkleTimer = sparkleTimer-lunatime.tick()
+		end
+	end
+	if SaveData.useSWing and player:mem(0x36,FIELD_BOOL) == true then
+		--player.speedY = player.speedY+1
+		Defines.gravity	= 24
+		Defines.player_runspeed	= 12
+		Defines.player_walkspeed = 6
+		Defines.jumpheight = 20
+		Defines.jumpheight_bounce = 20
+	else
+		Defines.gravity	= 12
+		if SaveData.useSWing == true then
+			Defines.player_runspeed	= 3
+			Defines.jumpheight = 30
+			Defines.jumpheight_bounce = 30
+			Defines.player_walkspeed = 2
+		else
+			Defines.player_runspeed	= 6
+			Defines.jumpheight = 20
+			Defines.jumpheight_bounce = 20
+			Defines.player_walkspeed = 3
+		end
+	end
 	if player2 then
 		if player.powerup ~= 4 and player2.powerup ~= 4  then
 			SaveData.usePWing = false
@@ -361,6 +424,9 @@ function inventory.onTick()
 	else
 		if player.powerup ~= 4 then
 			SaveData.usePWing = false
+		end
+		if player.powerup ~= 2 then
+			SaveData.useSWing = false
 		end
 	end
 end

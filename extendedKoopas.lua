@@ -382,7 +382,7 @@ do
             
 
             SFX.play(2)
-        elseif (reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0)) and config.jumphurt == false  then
+        elseif (reason == HARM_TYPE_FROMBELOW or (reason == HARM_TYPE_TAIL and v:mem(0x26,FIELD_WORD) == 0))  then
             if config.shellID > 0 then
                 turnIntoShell(v)
                 if reason == HARM_TYPE_FROMBELOW then
@@ -401,8 +401,9 @@ do
             end      
         elseif reason == HARM_TYPE_SPINJUMP and (config.isflying and config.spinjumpsafe) then -- isflying is hardcoded to always let spin jumps work! for some reason!
             eventObj.cancelled = true      
+        elseif reason == HARM_TYPE_JUMP and config.jumphurt == true  then
+            eventObj.cancelled = true   
         end
-        if config.jumphurt == true then eventObj.cancelled = true   end
     end
 end
 
