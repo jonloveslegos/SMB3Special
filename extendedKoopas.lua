@@ -22,7 +22,14 @@ local SHELL_VERTICAL_SPEED   = 0x00B2C864
 local colBox = Colliders.Box(0,0,0,0)
 local colBox2 = Colliders.Box(0,0,0,0)
 
-
+function tableContains(table, element)
+  for _, value in pairs(table) do
+    if value == element then
+      return true
+    end
+  end
+  return false
+end
 local function launchShell(v,culprit,upsideDown)
     if type(culprit) == "Player" then
         if (v.x + v.width*0.5) > (culprit.x + culprit.width*0.5) then
@@ -68,7 +75,11 @@ local function setConfigDefault(config,name,value)
         config:setDefaultProperty(name,value)
     end
 end
-
+function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
 
 -- Koopas
 do
@@ -631,17 +642,29 @@ do
         if v:mem(0x12C, FIELD_WORD) == 0 and v:mem(0x138, FIELD_WORD) == 0 then
             if data.bouncing then
                 v.speedX = v.speedX * 0.984
+                local stopped = false
+                for i=1, tablelength(Block.get(Block.SLOPE)) do
+                    if (Block.config[Block.get(Block.SLOPE)[i].id].floorslope ~= 0) then
+                        stopped = true
+                        break
+                    end
+                end
+                for i=1, tablelength(Block.get(Block.SEMISOLID)) do
+                    if tableContains(Block.getIntersecting(v.x,v.y,v.x+v.width,v.y+v.height+8),Block.get(Block.SEMISOLID)[i]) then
+                        stopped = true
+                        break
+                    end
+                end
+                if (v.collidesBlockBottom or stopped == true) and (math.abs(v.speedX) <= 0.35 or v.speedY == 0) then
+                        v.speedX = 0
+                        v:mem(0x18,FIELD_FLOAT,0) -- "real" speed x
 
-                if v.collidesBlockBottom and (math.abs(v.speedX) <= 0.35 or v.speedY == 0) then
-                    v.speedX = 0
-                    v:mem(0x18,FIELD_FLOAT,0) -- "real" speed x
+                        v:mem(0x12E,FIELD_WORD,0) -- can't hurt timer
+                        v:mem(0x130,FIELD_WORD,0) -- can't hurt player
 
-                    v:mem(0x12E,FIELD_WORD,0) -- can't hurt timer
-                    v:mem(0x130,FIELD_WORD,0) -- can't hurt player
-
-                    data.bouncing = false
-                elseif v:mem(0x12E,FIELD_WORD) > 0 then -- can't hurt timer
-                    v:mem(0x12E,FIELD_WORD,100)
+                        data.bouncing = false
+                    elseif v:mem(0x12E,FIELD_WORD) > 0 then -- can't hurt timer
+                        v:mem(0x12E,FIELD_WORD,100)
                 end
             end
         else

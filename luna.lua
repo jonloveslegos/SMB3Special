@@ -10,6 +10,7 @@ local pm = require("playermanager")
 local rng = require("rng")
 local starCoinTotal = SaveData._basegame.starcoinCounter
 local map = require("map")
+local pastFrame = 0
 local sec0 = Section(0)
 local raiseWater = false
 local respawningNPC = -1
@@ -76,7 +77,7 @@ local won = true
 local gotStamp = false
 local camOffset = 0
 local CamOffDir = 1
-local teleToSecret = false
+teleToSecret = false
 local isPswitch = false
 local downTimer = 300
 local playerHit = false
@@ -96,6 +97,9 @@ if not SaveData.stamps then
 end
 if not SaveData.bonusCount then
     SaveData.bonusCount = 0
+end
+if not SaveData.invincible then
+    SaveData.invincible = false
 end
 if not SaveData.stamps[levelEnterfilename] then
     SaveData.stamps[levelEnterfilename] = {}
@@ -363,32 +367,26 @@ function onTickEnd()
         if table.contains(Block.getIntersecting(player.x, player.y+player.height, player.x+player.width, player.y+player.height+player.height),Block.get(756)[1]) then
             downTimer = downTimer-1
             if downTimer <= 0 then
-                for i=1, tablelength(NPC.get()) do
-                    if table.contains(NPC.getIntersecting(player.x-8000,player.y-8000,player.x+8000,player.y+8000),NPC.get()[i]) and NPC.get()[i].id ~= 857 and NPC.get()[i].id ~= 849 and NPC.get()[i].id ~= 850 and NPC.get()[i].id ~= 755 then
-                        NPC.get()[i]:kill(HARM_TYPE_VANISH)
-                    end
-                end
-                for i=1, tablelength(Warp.get()) do
-                    if table.contains(Warp.getIntersectingEntrance(player.x-8000,player.y-8000,player.x+8000,player.y+8000),Warp.get()[i]) then
-                        Warp.get()[i].y = 0
-                        Warp.get()[i].x = 0
-                    end
-                end
-                for i=1, tablelength(BGO.get()) do
-                    if BGO.get()[i].id ~= 11 and BGO.get()[i].id ~= 61 and BGO.get()[i].id ~= 12 and BGO.get()[i].id ~= 60 then
-                        if table.contains(BGO.getIntersecting(player.x-8000,player.y-8000,player.x+8000,player.y+8000),BGO.get()[i]) then
-                            BGO.get()[i].isHidden = true
-                        end
-                        teleToSecret = true
-                    end
-                end
                 for i=1, tablelength(Block.get()) do
                     if Block.config[Block.get()[i].id].sizable == true then
-                        if table.contains(Block.getIntersecting(player.x-8000,player.y-8000,player.x+8000,player.y+8000),Block.get()[i]) then
-                            Block.get()[i]:delete()
+                        if Block.get()[i].id == 25 then
+                            Block.get()[i]:transform(781,true)
+                        end
+                        if Block.get()[i].id == 26 then
+                            Block.get()[i]:transform(782,true)
+                        end
+                        if Block.get()[i].id == 27 then
+                            Block.get()[i]:transform(783,true)
+                        end
+                        if Block.get()[i].id == 28 then
+                            Block.get()[i]:transform(784,true)
+                        end
+                        if Block.get()[i].id == 756 then
+                            Block.get()[i]:transform(784,true)
                         end
                     end
                 end
+                teleToSecret = true
             end
         end
     else
@@ -454,16 +452,47 @@ function onCameraUpdate(camIdx)
         Section(player.section).boundary.bottom = Section(player.section).boundary.bottom-waterMove
     end
 end
+function invincible(set)
+    if set == true then
+        SaveData.invincible = true
+    elseif set == false then
+        SaveData.invincible = false
+    end
+end
+function onPlayerHarm(eventToken,playerHarmed)
+    if SaveData.invincible == true then
+        eventToken.cancelled = true
+    end
+end
 function onInputUpdate()
     player:mem(0x38,FIELD_WORD,0)
 end
+function onDrawEnd()
+    if teleToSecret == true then
+        player.frame = pastFrame
+    end
+end
 function onDraw()
-    if SaveData.useSWing then player:render{x = x, y = y, ignorestate = false, sceneCoords = true, priority = 0, color = Color(0.5,0.5,1), mountcolor = Color.white, shader = shader} end
+    if SaveData.useSWing == true then 
+        if teleToSecret == true then
+            player:render{drawplayer = false, x = x, y = y, ignorestate = false, sceneCoords = true, priority = -97, color = Color.white, mountcolor = Color.white, shader = shader}
+            player:render{x = x, y = y, ignorestate = false, sceneCoords = true, priority = -96, color = Color(0.5,0.5,1), mountcolor = Color.white, shader = shader}
+        elseif player.forcedState ~= 3 then
+            player:render{x = x, y = y, ignorestate = false, sceneCoords = true, priority = -24, color = Color(0.5,0.5,1), mountcolor = Color.white, shader = shader}
+        else
+            player:render{x = x, y = y, ignorestate = false, sceneCoords = true, priority = -69, color = Color(0.5,0.5,1), mountcolor = Color.white, shader = shader}
+        end
+    elseif teleToSecret == true then
+            pastFrame = player.frame
+            player.frame = 29
+            player:render{frame = pastFrame, x = x, y = y, ignorestate = false, sceneCoords = true, priority = -97, color = Color.white, mountcolor = Color.white, shader = shader}
+    end
 end
 function onTick()
     if player == nil then 
         return 
     end
+    
     if SaveData.useSWing and player:mem(0x36,FIELD_BOOL) == true then
 		if player.keys.run == KEYS_DOWN or player.keys.altRun == KEYS_DOWN then
             if player.keys.up == KEYS_DOWN then
@@ -637,12 +666,14 @@ function onTick()
         randomizeBoxes = false
     end
     if teleToSecret == true then
-        for i=1, tablelength(BGO.get()) do
-            if table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(11)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(12)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(61)[i]) or table.contains(BGO.getIntersecting(player.x, player.y, player.x+player.width, player.y+player.height),BGO.get(60)[i]) then
-                player.section = 10
+        for i=1,tablelength(BGO.getIntersecting(player.x,player.y-500,player.x+player.width+128,player.y+500)) do
+            if BGO.getIntersecting(player.x,player.y-500,player.x+player.width+128,player.y+500)[i].id == 13 then
+                player.section = Section.getFromCoords(Block.get(992)[1].x, Block.get(992)[1].y, 16, 16).idx
                 player.speedX = 0
                 player.speedY = 0
+                teleToSecret = false
                 player:teleport(Block.get(992)[1].x,Block.get(992)[1].y+Block.get(992)[1].height,true)
+                break
             end
         end
     end
@@ -753,7 +784,31 @@ function onTick()
         if waterMove < -0.4 then waterMove = -0.4 end
         if waterMove > 0.4 then waterMove = 0.4 end
         waterHeight = waterHeight + waterMove
-        local bg = BGO.get()
+        local bg = BGO.get(82)
+        for i=1, tablelength(bg) do
+            if bg[i].id == 82 or bg[i].id == 83 or bg[i].id == 65 or bg[i].id == 165 then 
+                if Section.getIdxFromCoords(bg[i].x, bg[i].y, 32, 32) == player.section then
+                    bg[i].y = bg[i].y - waterMove
+                end
+            end
+        end
+        local bg = BGO.get(83)
+        for i=1, tablelength(bg) do
+            if bg[i].id == 82 or bg[i].id == 83 or bg[i].id == 65 or bg[i].id == 165 then 
+                if Section.getIdxFromCoords(bg[i].x, bg[i].y, 32, 32) == player.section then
+                    bg[i].y = bg[i].y - waterMove
+                end
+            end
+        end
+        local bg = BGO.get(65)
+        for i=1, tablelength(bg) do
+            if bg[i].id == 82 or bg[i].id == 83 or bg[i].id == 65 or bg[i].id == 165 then 
+                if Section.getIdxFromCoords(bg[i].x, bg[i].y, 32, 32) == player.section then
+                    bg[i].y = bg[i].y - waterMove
+                end
+            end
+        end
+        local bg = BGO.get(165)
         for i=1, tablelength(bg) do
             if bg[i].id == 82 or bg[i].id == 83 or bg[i].id == 65 or bg[i].id == 165 then 
                 if Section.getIdxFromCoords(bg[i].x, bg[i].y, 32, 32) == player.section then
@@ -1690,6 +1745,12 @@ function onNPCKill(eventToken,killedNPC,harmtype)
         respawningNPCx = nil
         respawningNPCTimer = npcTimerBase
     end
+    if killedNPC.id == 999 then
+        respawningNPC = 999
+        respawningNPCy = killedNPC.y
+        respawningNPCx = nil
+        respawningNPCTimer = npcTimerBase
+    end
     if killedNPC.id == 990 and gotStamp == false and harmtype == HARM_TYPE_VANISH and tablelength(Player.getIntersecting(killedNPC.x,killedNPC.y,killedNPC.x+killedNPC.width,killedNPC.y+killedNPC.height)) > 0 then
         gotStamp = true
         SFX.play(stampCollect)
@@ -1708,7 +1769,7 @@ function onNPCKill(eventToken,killedNPC,harmtype)
     end
 end
 function onExitLevel(win)
-    if string.find(Level.filename(),"-toad") == nil and Level.filename() ~= "slotgame.lvlx" and Level.filename() ~= "rock path.lvlx" and Level.filename() ~= "pipeSection.lvlx" and Level.filename() ~= "midsection.lvlx" and Level.filename() ~= "1-fortress.lvlx" then
+    if string.find(Level.filename(),"-toad") == nil and Level.filename() ~= "1-stars.lvlx" and Level.filename() ~= "slotgame.lvlx" and Level.filename() ~= "rock path.lvlx" and Level.filename() ~= "pipeSection.lvlx" and Level.filename() ~= "midsection.lvlx" and Level.filename() ~= "1-fortress.lvlx" then
         updatePlayerTurn()
     end
     if Level.name() == "1-1" then
@@ -1723,7 +1784,7 @@ function onExitLevel(win)
             counting = counting+1
         end
     end
-    if gotStamp == true then
+    if gotStamp == true and win > 0 then
         SaveData.stamps[Level.filename()][1] = true
     end
 end

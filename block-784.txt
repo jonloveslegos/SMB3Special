@@ -1,0 +1,3 @@
+sizable = true
+semisolid = true
+playerfilter = -1

@@ -62,7 +62,7 @@ function anotherPowerDownLibrary.onTick()
                 playerData[p].curState = p.powerup
             end
             if p.forcedState == 2 then --if powering down, change it the custom state
-                if playerData[p].curState == 2 then return end --cancel if the player is big
+                if playerData[p].curState == 2 and SaveData.useSWing == false then return end --cancel if the player is big
                 if p.character == CHARACTER_BOWSER then return end --cancel if the player is big
                 p.forcedState = anotherPowerDownLibrary.customForcedState
             end
@@ -88,6 +88,7 @@ function anotherPowerDownLibrary.onTick()
                     if p.powerup == playerData[p].curState then
                         p.powerup = 2
                     end
+                    SaveData.useSWing = false
                     p.BlinkTimer = 150
                     p.BlinkState = true
                     p.forcedState = 0
