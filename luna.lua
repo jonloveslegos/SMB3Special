@@ -16,6 +16,7 @@ local raiseWater = false
 local respawningNPC = -1
 local respawningNPCTimer = 0
 local respawningNPCy = 0
+local playerStarCount = 2
 local respawningNPCx = nil
 local npcTimerBase = 240
 local usePBar = true;
@@ -424,11 +425,24 @@ function onPostNPCKill(killedNPC,harmType)
         respawningNPCx = nil
         respawningNPCTimer = npcTimerBase
     end
-    if killedNPC.id == 395 then 
-        respawningNPC = 395
-        respawningNPCy = killedNPC.y
-        respawningNPCx = killedNPC.x
-        respawningNPCTimer = npcTimerBase
+    if player.hasStarman == true and harmType > 0 then
+        if playerStarCount == 2 then Misc.score(100)
+        elseif playerStarCount == 3 then Misc.score(200)
+        elseif playerStarCount == 4 then Misc.score(400)
+        elseif playerStarCount == 5 then Misc.score(800)
+        elseif playerStarCount == 6 then Misc.score(1000)
+        elseif playerStarCount == 7 then Misc.score(2000)
+        elseif playerStarCount == 8 then Misc.score(4000) end
+        Misc.givePoints(playerStarCount,vector(killedNPC.x,killedNPC.y),false)
+        if playerStarCount < 8 then 
+            playerStarCount = playerStarCount+1 
+        elseif playerStarCount == 8 then
+            playerStarCount = 10
+        elseif playerStarCount == 10 then
+            playerStarCount = 11
+        elseif playerStarCount == 11 then
+            playerStarCount = 10
+        end
     end
 end
 function onCameraUpdate(camIdx)
@@ -688,6 +702,7 @@ function onTick()
     end
     if tablelength(Block.get(993)) > 0 then
         local movelayer = Layer.get("upDown")
+        local movelayerdoor = Layer.get("upDownDoor")
         movelayer.pauseDuringEffect = true
         if Block.get(993)[1].x <= player.x then
             if movelayer:isPaused() == false then
@@ -704,6 +719,11 @@ function onTick()
                             movelayer.speedY = movelayer.speedY + (0.015*(movingLayerDir))
                             if movelayer.speedY > 1 then movelayer.speedY = 1 end
                             if movelayer.speedY < -1 then movelayer.speedY = -1 end
+                            for e=1,tablelength(Warp.get()) do
+                                if Warp.get()[e].layer == movelayerdoor then
+                                    Warp.get()[e].entranceY = Warp.get()[e].entranceY+movelayer.speedY
+                                end
+                            end
                         else
                             movelayer.speedY = 0
                         end
