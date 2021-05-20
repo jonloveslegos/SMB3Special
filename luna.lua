@@ -11,8 +11,10 @@ local rng = require("rng")
 local starCoinTotal = SaveData._basegame.starcoinCounter
 local map = require("map")
 local pastFrame = 0
+local flyTimer = 0
 local sec0 = Section(0)
 local raiseWater = false
+local flyJumped = false
 local respawningNPC = -1
 local respawningNPCTimer = 0
 local respawningNPCy = 0
@@ -425,7 +427,7 @@ function onPostNPCKill(killedNPC,harmType)
         respawningNPCx = nil
         respawningNPCTimer = npcTimerBase
     end
-    if player.hasStarman == true and harmType > 0 then
+    if player.hasStarman == true and (harmType == 1 or harmType == 3)and NPC.config[killedNPC.id].nohurt == false then
         if playerStarCount == 2 then Misc.score(100)
         elseif playerStarCount == 3 then Misc.score(200)
         elseif playerStarCount == 4 then Misc.score(400)
@@ -572,25 +574,41 @@ function onTick()
     else mx = -1 end
     local speed = player.speedX
     if (player.powerup == 4 or player.powerup == 5) and player.mount == 0 then
-        if((speed >= 3 or speed <= -3) and (isFlying ~= -1)) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
+        if (flyTimer <= 0) and pbarCount >= 40 and player:mem(0x170,FIELD_WORD) <= 0 and startedFlight == false then
                 player:mem(0x168,FIELD_FLOAT,mx+20)
                 player:mem(0x16C,FIELD_BOOL,true)
                 player:mem(0x170,FIELD_WORD,240)
+                flyTimer = 240
                 player:mem(0x16E,FIELD_BOOL,true)
-        elseif isFlying ~= -1 then
+        elseif flyTimer <= 0 then
             player:mem(0x168,FIELD_FLOAT,0)
             player:mem(0x16C,FIELD_BOOL,false)
             player:mem(0x16E,FIELD_BOOL,false)
-            if startedFlight == true and player:isGroundTouching() == true then
+            if startedFlight == true then
                 if pwingsndp ~= nil then
                     pwingsndp:stop()
                     pwingsndp = nil
                 end
+                pbarCount = 0
                 startedFlight = false
             end
-        elseif isFlying == -1 then
+        elseif flyTimer > 0 then
                 startedFlight = true
         end
+    end
+    if flyTimer > 0 then
+        flyTimer = flyTimer-1
+        if flyJumped == false then flyTimer = 240 end
+        player:mem(0x168,FIELD_FLOAT,mx+20)
+        player:mem(0x16C,FIELD_BOOL,true)
+        player:mem(0x170,FIELD_WORD,2)
+        player:mem(0x16E,FIELD_BOOL,true)
+        if player.keys.jump == KEYS_PRESSED or player.keys.altJump == KEYS_PRESSED then flyJumped = true end
+    else
+        player:mem(0x168,FIELD_FLOAT,0)
+        flyJumped = false
+        player:mem(0x16C,FIELD_BOOL,false)
+        player:mem(0x16E,FIELD_BOOL,false)
     end
     if SaveData.usePWing then
 		player:mem(0x168, FIELD_FLOAT, 40)
@@ -1186,28 +1204,16 @@ function onHUDDraw(cameraID)
     elseif pl.character == CHARACTER_ZELDA then mx = 40 
     elseif pl.character == CHARACTER_ULTIMATERINKA then mx = 60
     else mx = -1 end
-    if(((speed >= 3 or speed <= -3) and startedFlight == false and player.mount == 0) or (isFlying == -1) ) then
+    if(((speed >= (3*(6/7)) or speed <= -(3*(6/7))) and startedFlight == false and player.mount == 0) or (flyTimer > 0) ) then
             if startedFlight == false and player:isGroundTouching() then
-                if ((math.abs(speed) >= (3*(6/7))) or (isFlying == -1)) and pbarCount < 10 then
-			        pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (3.75*(6/7))) or (isFlying == -1)) and pbarCount < 15 then
-			            pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (4.25*(6/7))) or (isFlying == -1)) and pbarCount < 20 then
-			            pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (5*(6/7))) or (isFlying == -1)) and pbarCount < 25 then
-			            pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (5.75*(6/7))) or (isFlying == -1)) and pbarCount < 30 then
-			            pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (6.25*(6/7))) or (isFlying == -1)) and pbarCount < 35 then
-			            pbarCount = pbarCount+1;
-                elseif ((math.abs(speed) >= (7*(6/7))) or (isFlying == -1)) and pbarCount < 40 then
-			            pbarCount = pbarCount+1;
+                if ((math.abs(speed) >= (3*(6/7))) or (isFlying == -1)) then
+			        pbarCount = pbarCount+0.4;
                 end
             end
             if (isFlying ~= -1) then
                 Defines.player_runspeed	= 6
             end
-			if(pbarCount >= 40) and ((speed >= 6 or speed <= -6) or (isFlying == -1) ) then
+			if(pbarCount >= 40) or (flyTimer > 0) then
 				pbarCount = 40;
                 Defines.player_runspeed	= 7
                 if speed >= 6 then speed = 7 elseif speed <= -6 then speed = -7 end
@@ -1231,13 +1237,15 @@ function onHUDDraw(cameraID)
                     pwingsndp = nil
                 end
             end
-		else
+		elseif flyTimer <= 0 then
             Defines.player_runspeed	= 6
-			pbarCount = pbarCount - 0.5;
+			pbarCount = pbarCount - 0.2;
             if pwingsndp ~= nil then
                 pwingsndp:stop()
                 pwingsndp = nil
             end
+        else
+            pbarCount = 40
 		end
 
 		if(pbarCount <= 0) then
@@ -1246,6 +1254,7 @@ function onHUDDraw(cameraID)
     else
         Defines.player_runspeed	= 6
 		pbarCount = 0;
+        flyTimer = 0
         if pwingsndp ~= nil then
                 pwingsndp:stop()
                 pwingsndp = nil
